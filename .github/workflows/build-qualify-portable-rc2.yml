@@ -1,0 +1,114 @@
+name: build-qualify-portable-rc2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-qualify-portable-rc2.yml'
+      - 'release/build_portable_rc2.py'
+      - 'release/qualify_portable_rc2.py'
+      - 'release/validate_release_manifest.py'
+      - 'release/compare_portable_rc2.py'
+      - 'release/RC2_DECLARATION.json'
+      - 'reference/portable_runtime.py'
+      - 'schemas/release-manifest.schema.json'
+      - 'surfaces/portable.yaml'
+      - 'distributions/OMEGA_MANIFEST.yaml'
+      - 'specs/**'
+      - 'schemas/**'
+      - 'README.md'
+      - 'ARCHITECTURE.md'
+      - 'SECURITY.md'
+      - 'GOVERNANCE.md'
+      - 'llms.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform_class: linux-x86_64
+            artifact_name: rc2-Linux
+          - os: windows-latest
+            platform_class: windows-x86_64
+            artifact_name: rc2-Windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout exact triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up pinned Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+
+      - name: Install pinned schema validator
+        run: python -m pip install --disable-pip-version-check jsonschema==4.25.1
+
+      - name: Build canonical RC2
+        run: python release/build_portable_rc2.py --source-revision "${{ github.sha }}" --output rc2-out
+
+      - name: Validate emitted ReleaseManifest against published schema
+        run: python release/validate_release_manifest.py rc2-out/codexstation-omega-portable-0.1.0-rc2/MANIFEST.json --schema schemas/release-manifest.schema.json
+
+      - name: Qualify exact packaged knowledge-only runtime
+        run: python release/qualify_portable_rc2.py rc2-out/codexstation-omega-portable-0.1.0-rc2.zip --platform-class "${{ matrix.platform_class }}" --output rc2-evidence
+
+      - name: Upload exact-platform RC2 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: |
+            rc2-out/codexstation-omega-portable-0.1.0-rc2.zip
+            rc2-out/BUILD_RESULT.json
+            rc2-evidence/QUALIFICATION_RESULT.json
+            rc2-evidence/INSTALLATION_RECEIPT.json
+          if-no-files-found: error
+          retention-days: 90
+
+  compare:
+    needs: build-qualify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout comparison logic
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up pinned Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+
+      - name: Download Linux evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: rc2-Linux
+          path: compare/Linux
+
+      - name: Download Windows evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: rc2-Windows
+          path: compare/Windows
+
+      - name: Compare independent platform builds
+        run: python release/compare_portable_rc2.py compare/Linux/codexstation-omega-portable-0.1.0-rc2.zip compare/Windows/codexstation-omega-portable-0.1.0-rc2.zip --output compare/CROSS_PLATFORM_RESULT.json
+
+      - name: Upload cross-platform adjudication evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc2-cross-platform
+          path: compare/CROSS_PLATFORM_RESULT.json
+          if-no-files-found: error
+          retention-days: 90
