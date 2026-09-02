@@ -1,0 +1,51 @@
+schema_version: CS-IEF-10
+release_id: codexstation-omega-portable
+release_version: 0.1.0-rc1
+spec_root: CS-IEF-10
+omega_version: 0.2.0
+surface: portable
+provider: NONE
+baseline_mode: OMEGA_KNOWLEDGE_ONLY
+source:
+  repository: https://github.com/Ivan-Pasev/codexstation-ief
+  revision_policy: exact_commit_required_at_build
+inputs:
+  omega_manifest: distributions/OMEGA_MANIFEST.yaml
+  surface_profile: surfaces/portable.yaml
+  source_manifest: public_source_graph
+  include:
+    - README.md
+    - ARCHITECTURE.md
+    - SECURITY.md
+    - GOVERNANCE.md
+    - llms.txt
+    - specs/
+    - schemas/
+    - surfaces/portable.yaml
+    - distributions/OMEGA_MANIFEST.yaml
+    - reference/portable_runtime.py
+normalization:
+  path_separator: /
+  file_order: lexical
+  text_encoding: utf-8
+  line_endings: LF
+  archive_timestamp: 1980-01-01T00:00:00Z
+  owner_group_metadata: normalized
+  absolute_paths: forbidden
+  hostnames: excluded
+  build_wallclock_from_semantic_digest: excluded
+outputs:
+  semantic_release_manifest: MANIFEST.json
+  integrity_inventory: INTEGRITY.sha256
+  version_file: VERSION
+  archive: codexstation-omega-portable-0.1.0-rc1.zip
+claims:
+  target_reproducibility: BR1_RECIPE_BOUND
+  signing_status: UNSIGNED_REFERENCE_RC
+  platform_qualification: UNTESTED
+  execution_modes_qualified: []
+  eac_claim: null
+security:
+  raw_secrets: forbidden
+  private_lab_paths: forbidden
+  ambient_credentials: forbidden
