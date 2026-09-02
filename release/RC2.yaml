@@ -1,24 +1,50 @@
 schema_version: CS-IEF-13-RC2
 release_id: codexstation-omega-portable
 release_version: 0.1.0-rc2
-status: BUILD_PENDING
+status: QUALIFIED_KNOWLEDGE_ONLY_RC
 spec_root: CS-IEF-13
 omega_version: 0.2.0
 baseline_mode: OMEGA_KNOWLEDGE_ONLY
 execution_provider: NONE
 execution_modes_qualified: []
 eac_claim: null
+source_revision: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
+workflow_run_id: 33686291853
+archive_sha256: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2
+release_digest: sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13
+distribution_bundle_digest: sha256:e20325d2555d04adf1896f911c0ab88f24cd8daca50d28daa746b29644789e6f
+source_graph_digest: sha256:dd8f020f2e1c5ad4e8bfffcb531072d907678b2320df440137e54c2619e4467d
 signing_state: UNSIGNED
 trust_state: UNASSESSED
+reproducibility:
+  evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV
+  linux_windows_release_digest_identical: true
+  linux_windows_distribution_digest_identical: true
+  linux_windows_source_graph_digest_identical: true
+  extracted_tree_identical: true
+  archive_byte_identical: true
+platform_qualification:
+  overall: QUALIFIED_KNOWLEDGE_ONLY
+  records:
+    - platform: linux-x86_64
+      schema_validation: PASS
+      integrity: PASS
+      packaged_runtime_import: PASS
+      knowledge_only_install: PASS
+      installation_receipt_digest: sha256:3e55ee8ada0e0a420f66111cc2fdaa14c7bc965a3f944560651d262770e4ecd2
+      qualification: QUALIFIED_KNOWLEDGE_ONLY
+    - platform: windows-x86_64
+      schema_validation: PASS
+      integrity: PASS
+      packaged_runtime_import: PASS
+      knowledge_only_install: PASS
+      installation_receipt_digest: sha256:bc88e7a41b7f6b83b571d1b5ae018102aa852354ea00fec4c7eaa0a8235ec07d
+      qualification: QUALIFIED_KNOWLEDGE_ONLY
 promotion:
-  decision: PENDING
-required_gates:
-  - canonical ReleaseManifest generation
-  - published schema validation before packaging
-  - packaged runtime knowledge-only install
-  - Linux x86_64 exact-release qualification
-  - Windows x86_64 exact-release qualification
-  - cross-environment reproduction comparison
+  decision: PROMOTE_TO_QUALIFIED_UNSIGNED_RC
+  signing_eligible: true
+  public_release_eligible: true
+  execution_authorized: false
 claim_boundary:
   built_does_not_imply_installable: true
   schema_valid_does_not_imply_platform_qualified: true
