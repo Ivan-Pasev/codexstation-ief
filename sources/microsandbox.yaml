@@ -1,0 +1,14 @@
+id: microsandbox
+source_type: github
+repository: superradcompany/microsandbox
+role: reference-execution-provider
+trust_class: EXTERNAL_REFERENCE
+integration_class: PROVIDER_BEHIND_STABLE_ABI
+verified_branch: main
+verified_snapshot: 86326ceda9db6272455133e31851a0f2ef8b2fcb
+adapter_status: NOT_YET_IMPLEMENTED
+qualification_status: NOT_YET_BENCHMARKED
+notes:
+  - Microsandbox is a reference provider, not the IEF core.
+  - The snapshot is a reproducibility anchor, not a permanent dependency pin.
+  - Effective EAC must be established by qualification in the active environment.
