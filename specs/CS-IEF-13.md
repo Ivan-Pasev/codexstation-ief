@@ -1,6 +1,6 @@
 # CS-IEF-13 — Corrective Portable Omega RC2 Build and Qualification
 
-Status: active empirical release correction layer
+Status: CLOSED — QUALIFIED_KNOWLEDGE_ONLY_RC
 
 ## Purpose
 
@@ -17,95 +17,98 @@ RC1 remains preserved as historical evidence and is never modified in place.
 5. Qualification executes the `portable_runtime.py` shipped inside the archive, not a repository-side substitute.
 6. Knowledge-only qualification is exact-release and exact-platform evidence.
 7. Provider remains `NONE`; RC2 carries no EAC claim.
-8. Signing remains deferred until technical qualification succeeds.
+8. Signing remains separate from technical qualification.
 
 ## RC2 build chain
 
 `canonical public source -> build_portable_rc2.py -> source graph -> distribution binding -> ReleaseManifest -> schema validation -> INTEGRITY.sha256 -> normalized ZIP`
 
-The builder emits an explicit `DISTRIBUTION_BINDING.json` binding the portable surface profile, Omega manifest, source graph and builder identity. Its canonical digest is used as the ReleaseManifest `distribution_bundle_digest` for this corrective candidate.
+The builder emits `DISTRIBUTION_BINDING.json` binding the portable surface profile, Omega manifest, source graph and builder identity. Its canonical digest is used as the ReleaseManifest `distribution_bundle_digest`.
 
-## Required manifest fields
+## Qualification execution
 
-RC2 must bind at least:
+Final qualification workflow run: `33686291853`
 
-- `schema_version = CS-IEF-09`
-- release identity/version
-- `spec_root = CS-IEF-13`
-- Omega version
-- distribution bundle digest
-- builder/compiler identity and version
-- artifact rows with canonical `digest` fields
-- supported platform classes
-- source graph digest
-- deterministic release digest
+Exact release source revision: `1c625a5ce59197ec991f3f6778a0ad63dc0b7002`
 
-No RC1 `sha256` artifact-key alias is accepted.
+Both Linux x86_64 and Windows x86_64 independently:
 
-## Schema-validation gate
+- built RC2 through the canonical builder;
+- passed project-local manifest shape validation;
+- passed JSON Schema Draft 2020-12 validation against the published ReleaseManifest schema;
+- passed `INTEGRITY.sha256` verification;
+- imported the portable runtime shipped inside the exact generated archive;
+- executed `install_knowledge_only()`;
+- reached terminal `READY` in `OMEGA_KNOWLEDGE_ONLY` with provider `NONE`.
 
-The build workflow runs both a project-local shape validator and a standards-based JSON Schema Draft 2020-12 validation using a pinned validator implementation. Packaging evidence is rejected if either fails.
+Linux InstallationReceipt digest:
 
-`SCHEMA_VALIDATION_FAIL -> NO_RC2_ARTIFACT`
+`sha256:3e55ee8ada0e0a420f66111cc2fdaa14c7bc965a3f944560651d262770e4ecd2`
 
-## Packaged runtime qualification
+Windows InstallationReceipt digest:
 
-For each target platform the qualifier:
+`sha256:bc88e7a41b7f6b83b571d1b5ae018102aa852354ea00fec4c7eaa0a8235ec07d`
 
-1. opens the exact generated ZIP;
-2. verifies every `INTEGRITY.sha256` entry;
-3. imports `reference/portable_runtime.py` from the extracted release tree;
-4. reconstructs the artifact map from emitted ReleaseManifest rows;
-5. invokes `install_knowledge_only()` with provider `NONE`;
-6. requires terminal `READY`, effective mode `OMEGA_KNOWLEDGE_ONLY`, and selected provider `null`;
-7. emits exact-platform `InstallationReceipt` and qualification evidence.
+## Exact release identities
 
-This closes the RC1 test gap where only archive integrity was exercised.
+Archive SHA-256:
+
+`sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2`
+
+Release digest:
+
+`sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13`
+
+Distribution bundle digest:
+
+`sha256:e20325d2555d04adf1896f911c0ab88f24cd8daca50d28daa746b29644789e6f`
+
+Source graph digest:
+
+`sha256:dd8f020f2e1c5ad4e8bfffcb531072d907678b2320df440137e54c2619e4467d`
 
 ## Cross-platform reproduction
 
-Linux x86_64 and Windows x86_64 rebuild the same source revision through the same canonical builder. The comparison layer records independently:
+The final comparator established:
 
-- semantic release digest equality;
-- distribution binding digest equality;
-- source graph digest equality;
-- extracted payload tree equality;
-- ZIP archive byte equality.
+- Linux archive SHA-256 = Windows archive SHA-256;
+- release digests identical;
+- distribution binding digests identical;
+- source graph digests identical;
+- extracted payload trees identical;
+- ZIP archive bytes identical.
 
-A stronger byte-identical archive claim is made only if the archive SHA-256 values match.
+Evidenced reproducibility level:
 
-## Promotion rule
+`BR3_REPRODUCIBLE_INDEPENDENT_ENV`
 
-RC2 may reach `QUALIFIED_KNOWLEDGE_ONLY_RC` only if:
+The byte-identical archive observation is recorded as an additional measured property; it does not silently invent a higher reproducibility class.
 
-`SCHEMA_VALID AND INTEGRITY_PASS AND PACKAGED_RUNTIME_PASS AND BR3_REPRODUCTION AND EXISTS(platform: QUALIFIED_KNOWLEDGE_ONLY)`
+## Promotion decision
 
-Preferred closure requires both Linux x86_64 and Windows x86_64 knowledge-only qualification.
+`RC2 -> QUALIFIED_KNOWLEDGE_ONLY_RC`
 
-Promotion does not imply execution-provider qualification, EAC, signing, trust, safety or general semantic correctness.
+Promotion state:
 
-## Signing boundary
-
-Technical qualification precedes signing.
-
-`QUALIFIED -> eligible_for_signing_review`
-
-not
-
-`SIGNED -> QUALIFIED`
-
-RC2 remains unsigned until the qualification result supports promotion and an explicit trust-root action is taken.
-
-## Expected evidence artifacts
-
-- `release/RC2.yaml`
-- `release/RC2_BUILD_RESULT.json`
-- `release/RC2_QUALIFICATION_RESULT.json`
-- Linux and Windows `INSTALLATION_RECEIPT.json`
-- cross-platform comparison result
-- CI run/artifact identities
-- canonical Drive RC2 artifact and adjudication document after closure
+- `PROMOTE_TO_QUALIFIED_UNSIGNED_RC`
+- public release eligible: YES
+- signing review eligible: YES
+- signing state: `UNSIGNED`
+- trust state: `UNASSESSED`
+- execution authorized: NO
+- execution-provider qualification: NONE
+- EAC claim: null
 
 ## Claim boundary
 
 `BUILT != SCHEMA_VALID != INSTALLABLE != PLATFORM_QUALIFIED != SIGNED != TRUSTED != EXECUTION_AUTHORIZED`
+
+`QUALIFIED_KNOWLEDGE_ONLY != QUALIFIED_EXECUTION`
+
+A successful knowledge-only portable qualification establishes only the exact bootstrap/use surface measured here. It does not qualify Microsandbox or any execution provider, assign EAC, establish semantic truth, or authorize effects.
+
+## Closure
+
+CS-IEF-13 closes successfully. RC2 corrects the RC1 manifest/runtime and cross-platform archive-ordering defects, reaches exact-platform `QUALIFIED_KNOWLEDGE_ONLY` on Linux x86_64 and Windows x86_64, and is reproducible across those independent environments with byte-identical normalized archives.
+
+Next canonical layer: CS-IEF-14 — operational signing/trust-root ceremony, signed-release verification, release witness binding, immutable public release/tag publication where supported, and post-release upgrade/rollback conformance without conflating signature with trust or execution authorization.
