@@ -5,10 +5,27 @@ role: reference-execution-provider
 trust_class: EXTERNAL_REFERENCE
 integration_class: PROVIDER_BEHIND_STABLE_ABI
 verified_branch: main
-verified_snapshot: 86326ceda9db6272455133e31851a0f2ef8b2fcb
-adapter_status: NOT_YET_IMPLEMENTED
-qualification_status: NOT_YET_BENCHMARKED
+verified_snapshot: e36792dae06edcd9b6f86abd6b83da7a26c7cdf6
+previous_snapshot: 86326ceda9db6272455133e31851a0f2ef8b2fcb
+adapter_status: MAPPING_DEFINED_IMPLEMENTATION_PENDING
+qualification_status: FEATURE_SURFACE_VERIFIED_EAC_PENDING
+verified_surfaces:
+  - microvm_backed_sandbox_creation
+  - cpu_memory_limits
+  - oci_bind_rootfs_disk_snapshot_inputs
+  - collected_and_streaming_exec
+  - guest_filesystem_io
+  - named_bind_tmpfs_disk_mounts
+  - network_disable_and_policy
+  - dns_filtering_tls_interception
+  - destination_bound_secret_substitution
+  - port_publishing
+  - rootfs_patches
+  - detached_lifecycle
+  - metrics_logs_snapshots
+  - ssh_sftp
 notes:
   - Microsandbox is a reference provider, not the IEF core.
   - The snapshot is a reproducibility anchor, not a permanent dependency pin.
-  - Effective EAC must be established by qualification in the active environment.
+  - Feature support does not imply qualified enforcement strength.
+  - Effective EAC must be established by conformance and environment qualification.
