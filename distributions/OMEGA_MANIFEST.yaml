@@ -1,0 +1,50 @@
+schema_version: CS-IEF-08
+omega_version: 0.2.0
+project: CodexStation IEF
+composition:
+  constitutional_core:
+    required: true
+    role: invariant and authority kernel
+  architecture:
+    required: true
+    role: provider-neutral system model
+  execution_fabric:
+    required: true
+    role: execution, policy, assurance, profiles and witness semantics
+  provider_manifest:
+    required: true
+    role: declared runtime/tool capabilities
+  source_manifest:
+    required: true
+    role: explicit grounded source graph
+  surface_adapter:
+    required: true
+    role: target-specific representation and capability projection
+  domain_crystals:
+    required: false
+    role: removable specialized knowledge/capability packs
+  integrity:
+    required: true
+    role: version, input/output digests and compiler receipt
+mandatory_invariants:
+  - EFFECTIVE_AUTHORITY_SUBSET_AUTHORIZED
+  - ISOLATION_NOT_AUTHORIZATION
+  - WITNESSED_NOT_TRUE
+  - NO_SILENT_EAC_PROMOTION
+  - NO_AMBIENT_SECRETS
+surfaces:
+  - chatgpt
+  - gemini
+  - gemini-notebook
+  - portable
+rules:
+  generated_is_not_canonical: true
+  surface_may_narrow_not_rewrite: true
+  unavailable_capabilities_must_be_disclosed: true
+  secrets_in_distribution: forbidden
+  private_lab_sources_public_by_default: false
+  provider_identity_is_not_assurance: true
+compiler:
+  spec: CS-IEF-08
+  reference: reference/omega_compiler.py
+  status: REFERENCE_SKELETON
