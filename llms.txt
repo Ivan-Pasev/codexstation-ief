@@ -10,6 +10,15 @@ Primary documents:
 - ROADMAP.md — specification progression
 - specs/CS-IEF-02.md — execution specification/receipt contract
 - specs/CS-IEF-03.md — provider ABI and capability negotiation
-- sources/microsandbox.yaml — reference provider source manifest
+- specs/CS-IEF-04.md — MicrosandboxProvider reference mapping and qualification gates
+- providers/microsandbox/README.md — reference adapter boundary and status
+- sources/microsandbox.yaml — pinned reference-provider source manifest
 
-Key rule: Microsandbox is a reference provider behind the stable IEF ABI, not the architectural core.
+Current verified Microsandbox source snapshot:
+- e36792dae06edcd9b6f86abd6b83da7a26c7cdf6
+
+Key rules:
+- Microsandbox is a reference provider behind the stable IEF ABI, not the architectural core.
+- Feature support is not assurance evidence.
+- No EAC-3 assignment exists until active-environment qualification passes.
+- Provider-specific types must remain below the stable IEF kernel boundary.
