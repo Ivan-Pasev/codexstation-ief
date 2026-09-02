@@ -1,0 +1,31 @@
+profile_id: research.reproducible
+profile_version: 0.1.0
+profile_type: RESEARCH
+purpose: Reproducible scientific/numerical/symbolic execution with pinned inputs and toolchain.
+reproducibility_mode: R2_PINNED_TOOLCHAIN
+network_default: NONE
+persistence_default: EPHEMERAL
+raw_secrets_allowed: false
+mutable_host_bind_default: false
+shared_mutable_default: false
+evidence_requirements:
+  - research_manifest_digest
+  - execution_spec_digest
+  - provider_plan_digest
+  - execution_receipt_digest
+  - input_manifest_digests
+  - runtime_toolchain_manifest_digest
+  - output_artifact_digests
+  - stdout_stderr_digests
+  - terminal_state
+policy_defaults:
+  filesystem:
+    immutable_inputs: true
+    ephemeral_workspace: true
+    controlled_export_only: true
+  network:
+    mode: NONE
+  persistence:
+    mode: EPHEMERAL
+  secrets:
+    raw_guest_secrets: FORBIDDEN
