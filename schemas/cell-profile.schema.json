@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexstation.g-i-l-c.com/ief/schemas/cell-profile.schema.json",
+  "title": "CS-IEF CellProfile",
+  "oneOf": [
+    {"$ref": "#/$defs/research"},
+    {"$ref": "#/$defs/formalProof"}
+  ],
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["profile_id", "profile_version", "profile_type", "purpose", "reproducibility_mode", "network_default", "persistence_default", "evidence_requirements"],
+      "properties": {
+        "profile_id": {"type": "string", "minLength": 1},
+        "profile_version": {"type": "string", "minLength": 1},
+        "profile_type": {"enum": ["RESEARCH", "FORMAL_PROOF"]},
+        "purpose": {"type": "string", "minLength": 1},
+        "reproducibility_mode": {"enum": ["R0_EXPLORATORY", "R1_PINNED_INPUTS", "R2_PINNED_TOOLCHAIN", "R3_DETERMINISTIC_REPLAY", "R4_INDEPENDENT_REPLICATION"]},
+        "network_default": {"enum": ["NONE", "DENY_ALL"]},
+        "persistence_default": {"enum": ["EPHEMERAL"]},
+        "raw_secrets_allowed": {"const": false},
+        "mutable_host_bind_default": {"const": false},
+        "shared_mutable_default": {"const": false},
+        "evidence_requirements": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "research": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "required": ["profile_type", "research"],
+          "properties": {
+            "profile_type": {"const": "RESEARCH"},
+            "research": {
+              "type": "object",
+              "required": ["research_id", "question", "method", "expected_observables", "acceptance_or_falsification_criteria", "inputs", "source_refs", "software_toolchain", "randomness", "artifact_contract"],
+              "properties": {
+                "research_id": {"type": "string"},
+                "question": {"type": "string"},
+                "hypothesis": {"type": ["string", "null"]},
+                "method": {"type": "string"},
+                "expected_observables": {"type": "array", "items": {"type": "string"}},
+                "acceptance_or_falsification_criteria": {"type": "array", "items": {"type": "string"}},
+                "inputs": {"type": "array", "items": {"type": "object", "required": ["id", "digest"], "properties": {"id": {"type": "string"}, "digest": {"type": "string"}, "provenance": {"type": "string"}}}},
+                "source_refs": {"type": "array", "items": {"type": "object", "required": ["source", "ref"], "properties": {"source": {"type": "string"}, "ref": {"type": "string"}}}},
+                "software_toolchain": {"type": "array", "items": {"type": "object", "required": ["name", "version"], "properties": {"name": {"type": "string"}, "version": {"type": "string"}, "digest": {"type": ["string", "null"]}}}},
+                "randomness": {"enum": ["none", "fixed_seed", "captured_seed", "nondeterministic"]},
+                "artifact_contract": {"type": "array", "items": {"type": "string"}}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "formalProof": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "required": ["profile_type", "proof"],
+          "properties": {
+            "profile_type": {"const": "FORMAL_PROOF"},
+            "proof": {
+              "type": "object",
+              "required": ["proof_id", "theorem_name", "formal_language", "prover", "prover_version", "entrypoint", "source_digest", "dependency_manifest_digest", "expected_theorem_status"],
+              "properties": {
+                "proof_id": {"type": "string"},
+                "theorem_name": {"type": "string"},
+                "formal_language": {"type": "string"},
+                "prover": {"type": "string"},
+                "prover_version": {"type": "string"},
+                "entrypoint": {"type": "string"},
+                "source_digest": {"type": "string"},
+                "dependency_manifest_digest": {"type": "string"},
+                "expected_theorem_status": {"type": "string"}
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
