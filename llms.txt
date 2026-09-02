@@ -27,6 +27,7 @@ Primary documents:
 - schemas/installation-receipt.schema.json — local bootstrap/install evidence contract
 - schemas/build-attestation.schema.json — reproducible build provenance/attestation contract
 - schemas/platform-qualification.schema.json — exact-release platform qualification contract
+- schemas/trust-root-policy.schema.json — signer identity/key-scope/revocation trust policy contract
 - profiles/research/reproducible.yaml — safe reproducible ResearchCell baseline
 - profiles/formal-proof/lean4.yaml — Lean 4 FormalProofCell baseline
 - surfaces/chatgpt.yaml — ChatGPT Ω projection profile
@@ -36,6 +37,8 @@ Primary documents:
 - distributions/OMEGA_MANIFEST.yaml — public Ω composition/invariant manifest
 - release/BUILD_RECIPE.portable-rc1.yaml — provider-free Ω portable RC1 reproducible-build recipe
 - release/PLATFORM_QUALIFICATION.yaml — evidence-bounded platform qualification matrix
+- release/TRUST_ROOT_POLICY.yaml — explicit RC signing/trust policy; RC1 currently unsigned
+- release/RC1.yaml — provider-free portable Ω RC1 declaration and limitations
 - reference/policy_compiler.py — provider-neutral policy compiler skeleton
 - reference/profile_compiler.py — purpose-profile constructor skeleton
 - reference/witness_graph.py — deterministic append-only witness graph reference
@@ -60,6 +63,7 @@ Key rules:
 - There is one canonical Ω and multiple generated surface projections; generated artifacts are not new canon.
 - BUILT != REPRODUCED != ATTESTED != SIGNED != TRUSTED != QUALIFIED != AUTHORIZED.
 - A valid signature is cryptographic evidence, not automatic trust, platform qualification, safety or execution authorization.
+- RC1 is explicitly UNSIGNED and UNTESTED until signing and platform evidence exist.
 - Platform support is exact-release evidence; UNTESTED must never be presented as supported.
 - The first portable RC target is provider-free OMEGA_KNOWLEDGE_ONLY and carries no EAC claim.
 - Surface adapters may narrow representation/capabilities but may never rewrite constitutional, authority, assurance, witness, security, or claim-boundary semantics.
