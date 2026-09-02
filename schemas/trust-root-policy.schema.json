@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://g-i-l-c.com/codexstation/ief/schemas/trust-root-policy.schema.json",
+  "title":"CS-IEF-10 TrustRootPolicy",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","policy_id","version","accepted_signers","artifact_scopes","policy_digest"],
+  "properties":{
+    "schema_version":{"const":"CS-IEF-10"},
+    "policy_id":{"type":"string","minLength":1},
+    "version":{"type":"string","minLength":1},
+    "accepted_signers":{"type":"array","items":{"type":"object","required":["signer_id","key_id","status"],"properties":{"signer_id":{"type":"string"},"key_id":{"type":"string"},"status":{"enum":["ACTIVE","REVOKED","EXPIRED","UNKNOWN"]},"valid_from":{"type":["string","null"]},"valid_until":{"type":["string","null"]}},"additionalProperties":false}},
+    "artifact_scopes":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "threshold":{"type":"integer","minimum":1,"default":1},
+    "revocation_refs":{"type":"array","items":{"type":"string"}},
+    "policy_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+  }
+}
