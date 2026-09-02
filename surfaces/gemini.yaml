@@ -1,0 +1,17 @@
+schema_version: CS-IEF-08
+surface_id: gemini
+surface_version: 0.1.0
+mandatory_invariants:
+  - EFFECTIVE_AUTHORITY_SUBSET_AUTHORIZED
+  - ISOLATION_NOT_AUTHORIZATION
+  - WITNESSED_NOT_TRUE
+  - NO_SILENT_EAC_PROMOTION
+  - NO_AMBIENT_SECRETS
+projection:
+  source_first: false
+  tool_routing: true
+  portable_filesystem: false
+  context_budget: null
+  chunking: constitutional-plus-source-graph
+  bootstrap: "Load canonical constitutional/architecture crystals and negotiate actual tool capabilities explicitly."
+profile_digest: PENDING_CANONICAL_BUILD
