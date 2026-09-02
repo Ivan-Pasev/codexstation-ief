@@ -1,0 +1,24 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://g-i-l-c.com/codexstation/ief/schemas/build-attestation.schema.json",
+  "title":"CS-IEF-10 BuildAttestation",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","build_recipe_digest","source_revision","builder_class","environment_digest","input_manifest_digest","release_manifest_digest","artifact_set_digest","reproducibility_level","attestation_digest"],
+  "properties":{
+    "schema_version":{"const":"CS-IEF-10"},
+    "build_recipe_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "source_revision":{"type":"string","minLength":1},
+    "builder_class":{"type":"string","minLength":1},
+    "environment_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "input_manifest_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "release_manifest_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "artifact_set_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "reproducibility_level":{"enum":["BR0_SINGLE_BUILD","BR1_RECIPE_BOUND","BR2_REPEATABLE_SAME_ENV","BR3_REPRODUCIBLE_INDEPENDENT_ENV","BR4_DIVERSE_REPRODUCTION"]},
+    "independent_reproduction_refs":{"type":"array","items":{"type":"string"}},
+    "normalization_policy":{"type":"string"},
+    "build_policy_version":{"type":"string"},
+    "observation_time":{"type":["string","null"]},
+    "attestation_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+  }
+}
