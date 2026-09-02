@@ -1,0 +1,31 @@
+{
+  "schema_version": "CS-IEF-13-RC2-BUILD-RESULT",
+  "release_id": "codexstation-omega-portable",
+  "release_version": "0.1.0-rc2",
+  "source_revision": "1c625a5ce59197ec991f3f6778a0ad63dc0b7002",
+  "workflow_run_id": 33686291853,
+  "archive_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+  "release_digest": "sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13",
+  "distribution_bundle_digest": "sha256:e20325d2555d04adf1896f911c0ab88f24cd8daca50d28daa746b29644789e6f",
+  "source_graph_digest": "sha256:dd8f020f2e1c5ad4e8bfffcb531072d907678b2320df440137e54c2619e4467d",
+  "manifest_shape_validation": "PASS",
+  "json_schema_draft_2020_12_validation": {
+    "linux_x86_64": "PASS",
+    "windows_x86_64": "PASS"
+  },
+  "archive_reproduction": {
+    "linux_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+    "windows_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+    "byte_identical": true,
+    "extracted_tree_identical": true,
+    "release_digest_identical": true,
+    "distribution_bundle_digest_identical": true,
+    "source_graph_digest_identical": true,
+    "evidenced_level": "BR3_REPRODUCIBLE_INDEPENDENT_ENV"
+  },
+  "provider": "NONE",
+  "baseline_mode": "OMEGA_KNOWLEDGE_ONLY",
+  "eac_claim": null,
+  "signing_state": "UNSIGNED",
+  "trust_state": "UNASSESSED"
+}
