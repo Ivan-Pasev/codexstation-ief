@@ -1,57 +1,54 @@
-schema_version: CS-IEF-12
-release_target: codexstation-omega-portable-0.1.0-rc1
-matrix:
-  - platform_class: linux
-    architectures: [x86_64, arm64]
-    reproduction:
-      x86_64: PASS_GITHUB_UBUNTU
-      arm64: UNTESTED
-    integrity:
-      x86_64: PASS
-    knowledge_only:
-      x86_64: FAILED_RC1_MANIFEST_RUNTIME_CONTRACT
-      arm64: UNTESTED
-    policy_only: UNTESTED
-    execution_modes: []
-    limitations:
-      - exact RC1 archive integrity passes but packaged knowledge-only installer fails before READY
-      - failure is release-manifest/runtime contract mismatch, not provider qualification
-  - platform_class: windows
-    architectures: [x86_64, arm64]
-    reproduction:
-      x86_64: PASS_GITHUB_WINDOWS
-      arm64: UNTESTED
-    integrity:
-      x86_64: PASS
-    knowledge_only:
-      x86_64: NOT_ATTEMPTED
-      arm64: UNTESTED
-    policy_only: UNTESTED
-    execution_modes: []
-    limitations:
-      - cross-platform semantic reproduction passes
-      - knowledge-only install qualification not executed for exact RC1
-  - platform_class: macos
-    architectures: [arm64]
-    reproduction:
-      arm64: UNTESTED
-    knowledge_only:
-      arm64: UNTESTED
-    policy_only: UNTESTED
-    execution_modes: []
-    limitations:
-      - no public platform qualification evidence recorded yet
-reproducibility:
-  cross_environment_run_id: 33679584508
-  semantic_release_digest_identical: true
-  extracted_tree_identical: true
-  byte_identical_archive: false
-  evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
-  archive_difference_diagnosis: platform-dependent zip entry ordering from pathlib sorting
+schema_version: CS-IEF-13
+records:
+  rc1:
+    release_target: codexstation-omega-portable-0.1.0-rc1
+    status: HOLD_INSTALL_CONTRACT_DEFECT
+    linux_x86_64:
+      reproduction: PASS
+      integrity: PASS
+      knowledge_only: FAILED_RC1_MANIFEST_RUNTIME_CONTRACT
+    windows_x86_64:
+      reproduction: PASS
+      integrity: PASS
+      knowledge_only: NOT_ATTEMPTED
+    reproducibility:
+      evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
+      extracted_tree_identical: true
+      archive_byte_identical: false
+  rc2:
+    release_target: codexstation-omega-portable-0.1.0-rc2
+    source_revision: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
+    workflow_run_id: 33686291853
+    archive_sha256: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2
+    release_digest: sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13
+    linux_x86_64:
+      schema_validation: PASS
+      integrity: PASS
+      packaged_runtime_import: PASS
+      knowledge_only: QUALIFIED_KNOWLEDGE_ONLY
+      terminal_state: READY
+      installation_receipt_digest: sha256:3e55ee8ada0e0a420f66111cc2fdaa14c7bc965a3f944560651d262770e4ecd2
+    windows_x86_64:
+      schema_validation: PASS
+      integrity: PASS
+      packaged_runtime_import: PASS
+      knowledge_only: QUALIFIED_KNOWLEDGE_ONLY
+      terminal_state: READY
+      installation_receipt_digest: sha256:bc88e7a41b7f6b83b571d1b5ae018102aa852354ea00fec4c7eaa0a8235ec07d
+    reproducibility:
+      evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV
+      release_digest_identical: true
+      distribution_bundle_digest_identical: true
+      source_graph_digest_identical: true
+      extracted_tree_identical: true
+      archive_byte_identical: true
+    execution_modes_qualified: []
+    provider: NONE
+    eac_claim: null
 rules:
   provider_name_does_not_assign_eac: true
   knowledge_only_may_qualify_without_execution_provider: true
   execution_mode_requires_current_provider_qualification: true
   untested_must_not_be_presented_as_supported: true
   build_reproduction_does_not_equal_install_qualification: true
-  semantic_reproduction_does_not_equal_byte_identical_archive: true
+  platform_knowledge_only_qualification_does_not_equal_execution_qualification: true
