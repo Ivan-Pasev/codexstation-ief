@@ -17,18 +17,19 @@ Primary documents:
 - specs/CS-IEF-08.md — deterministic Ω multi-surface distribution compiler
 - specs/CS-IEF-09.md — portable/local runtime, bootstrap, packaging and installation contract
 - specs/CS-IEF-10.md — release engineering, reproducible build attestation, signing/trust separation and platform qualification
-- specs/CS-IEF-12.md — independent reproduction, platform qualification and RC adjudication
+- specs/CS-IEF-12.md — independent reproduction, platform qualification and RC1 adjudication
+- specs/CS-IEF-13.md — corrective RC2 schema-conformant packaging and qualification contract
+- schemas/release-manifest.schema.json — deterministic portable release manifest
+- schemas/installation-receipt.schema.json — local bootstrap/install evidence contract
+- schemas/build-attestation.schema.json — reproducible build provenance/attestation contract
+- schemas/platform-qualification.schema.json — exact-release platform qualification contract
+- schemas/trust-root-policy.schema.json — signer identity/key-scope/revocation trust policy contract
 - schemas/policy-decision.schema.json — machine-readable authorization/rejection evidence
 - schemas/cell-profile.schema.json — machine-readable research/proof profile contract
 - schemas/evidence-bundle.schema.json — deterministic evidence bundle manifest
 - schemas/witness-record.schema.json — machine-readable witness/provenance record
 - schemas/surface-profile.schema.json — target-surface projection contract
 - schemas/distribution-bundle.schema.json — compiled distribution/integrity contract
-- schemas/release-manifest.schema.json — deterministic portable release manifest
-- schemas/installation-receipt.schema.json — local bootstrap/install evidence contract
-- schemas/build-attestation.schema.json — reproducible build provenance/attestation contract
-- schemas/platform-qualification.schema.json — exact-release platform qualification contract
-- schemas/trust-root-policy.schema.json — signer identity/key-scope/revocation trust policy contract
 - profiles/research/reproducible.yaml — safe reproducible ResearchCell baseline
 - profiles/formal-proof/lean4.yaml — Lean 4 FormalProofCell baseline
 - surfaces/chatgpt.yaml — ChatGPT Ω projection profile
@@ -36,40 +37,30 @@ Primary documents:
 - surfaces/gemini-notebook.yaml — source-first Gemini Notebook Ω profile
 - surfaces/portable.yaml — portable filesystem Ω profile
 - distributions/OMEGA_MANIFEST.yaml — public Ω composition/invariant manifest
-- release/BUILD_RECIPE.portable-rc1.yaml — provider-free Ω portable RC1 reproducible-build recipe
-- release/PLATFORM_QUALIFICATION.yaml — evidence-bounded exact-RC platform qualification matrix
-- release/TRUST_ROOT_POLICY.yaml — explicit RC signing/trust policy
-- release/RC1.yaml — exact RC1 adjudication state; currently held
-- release/RC1_QUALIFICATION_RESULT.json — cross-platform reproduction and install-qualification evidence
+- release/RC1.yaml — historical RC1 adjudication; held for install-contract defects
+- release/RC1_QUALIFICATION_RESULT.json — RC1 reproduction/qualification evidence
+- release/RC2_DECLARATION.json — immutable corrective candidate declaration consumed by the builder
+- release/RC2.yaml — evolving RC2 adjudication state outside the release payload
+- release/build_portable_rc2.py — canonical RC2 builder
+- release/qualify_portable_rc2.py — archive-only packaged-runtime qualifier
+- reference/portable_runtime.py — canonical release-manifest construction, verification and knowledge-only bootstrap
+- reference/runtime_bootstrap.py — provider-observation/qualification-aware bootstrap reference slice
+- reference/release_engineering.py — build attestation and platform-claim reference helpers
 - reference/policy_compiler.py — provider-neutral policy compiler skeleton
 - reference/profile_compiler.py — purpose-profile constructor skeleton
 - reference/witness_graph.py — deterministic append-only witness graph reference
 - reference/omega_compiler.py — deterministic multi-surface projection skeleton
-- reference/portable_runtime.py — deterministic release verification and knowledge-only bootstrap reference
-- reference/runtime_bootstrap.py — provider-observation/qualification-aware bootstrap reference slice
-- reference/release_engineering.py — build attestation and platform-claim reference helpers
-- tests/test_policy_compiler.py — CS-IEF-05 fail-closed vectors
-- tests/test_profile_compiler.py — CS-IEF-06 profile/claim-boundary vectors
-- tests/test_witness_graph.py — CS-IEF-07 graph/tamper/claim-boundary vectors
-- tests/test_omega_compiler.py — CS-IEF-08 determinism/drift/capability vectors
-- tests/test_portable_runtime.py — CS-IEF-09 release/bootstrap/mode-selection vectors
-- tests/test_runtime_bootstrap.py — CS-IEF-09 provider-observation/bootstrap vectors
-- tests/test_release_engineering.py — CS-IEF-10 attestation/trust/platform claim-boundary vectors
 - providers/microsandbox/README.md — reference adapter boundary and status
 - sources/microsandbox.yaml — pinned reference-provider source manifest
 
 Current verified Microsandbox source snapshot:
 - e36792dae06edcd9b6f86abd6b83da7a26c7cdf6
 
-Current portable RC adjudication:
-- RC1 source revision: 2c433220ecdfbb977a3d4c96b6c326649147c3e9
-- RC1 status: HOLD_INSTALL_CONTRACT_DEFECT
-- Linux/Windows independent-environment semantic release digest: identical
-- evidenced reproducibility: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
-- cross-platform ZIP bytes: not identical; extracted payload trees are identical
-- exact RC1 Linux knowledge-only installation: FAILED due ReleaseManifest/runtime contract mismatch
-- RC1 is unsigned, untrusted, platform-unqualified and carries no EAC claim
-- corrective target: 0.1.0-rc2
+Portable release state:
+- RC1: HOLD_INSTALL_CONTRACT_DEFECT; preserved unchanged as historical evidence.
+- RC1 achieved BR3 independent-environment semantic reproduction across Linux/Windows but failed exact packaged knowledge-only installation because its generated ReleaseManifest drifted from the canonical schema/runtime contract.
+- RC2 target: schema-conformant canonical ReleaseManifest, explicit distribution/source/compiler binding, packaged-runtime installer execution, host-independent archive ordering, Linux/Windows reproduction and exact-platform knowledge-only qualification.
+- RC2 remains provider NONE, EAC null, unsigned and untrusted until evidence changes those facts.
 
 Key rules:
 - There is one canonical Ω and multiple generated surface projections; generated artifacts are not new canon.
@@ -81,6 +72,8 @@ Key rules:
 - Cross-platform reproduction does not imply platform installation qualification.
 - Platform support is exact-release evidence; UNTESTED must never be presented as supported.
 - The portable baseline is provider-free OMEGA_KNOWLEDGE_ONLY and carries no EAC claim.
+- RC2 package construction must use the canonical public builder and must validate the emitted ReleaseManifest before packaging.
+- RC2 qualification must execute the portable runtime shipped inside the exact archive.
 - Surface adapters may narrow representation/capabilities but may never rewrite constitutional, authority, assurance, witness, security, or claim-boundary semantics.
 - Unavailable capabilities are disclosed/omitted; they are never simulated by prose.
 - Installation is not authorization; provider discovery is not qualification; qualification is not execution authorization.
