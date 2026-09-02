@@ -1,0 +1,27 @@
+schema_version: CS-IEF-13-RC2
+release_id: codexstation-omega-portable
+release_version: 0.1.0-rc2
+status: BUILD_PENDING
+spec_root: CS-IEF-13
+omega_version: 0.2.0
+baseline_mode: OMEGA_KNOWLEDGE_ONLY
+execution_provider: NONE
+execution_modes_qualified: []
+eac_claim: null
+signing_state: UNSIGNED
+trust_state: UNASSESSED
+promotion:
+  decision: PENDING
+required_gates:
+  - canonical ReleaseManifest generation
+  - published schema validation before packaging
+  - packaged runtime knowledge-only install
+  - Linux x86_64 exact-release qualification
+  - Windows x86_64 exact-release qualification
+  - cross-environment reproduction comparison
+claim_boundary:
+  built_does_not_imply_installable: true
+  schema_valid_does_not_imply_platform_qualified: true
+  platform_qualified_knowledge_only_does_not_imply_execution_qualified: true
+  signed_does_not_imply_trusted: true
+  release_does_not_authorize_execution: true
