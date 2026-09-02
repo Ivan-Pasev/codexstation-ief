@@ -1,0 +1,19 @@
+schema_version: CS-IEF-10
+policy_id: codexstation-ief-public-release-trust
+version: 0.1.0
+status: BOOTSTRAP
+accepted_signers: []
+artifact_scopes:
+  - codexstation-omega-portable
+threshold: 1
+revocation_refs: []
+unsigned_policy:
+  rc_allowed: true
+  stable_release_allowed: false
+rules:
+  signature_valid_does_not_imply_trusted: true
+  trusted_does_not_imply_safe: true
+  signing_keys_in_release: forbidden
+notes:
+  - rc1 is explicitly UNSIGNED until a signer/key lifecycle is established and separately verified
+  - absence of accepted signers means no signed artifact can currently satisfy TRUSTED under this policy
