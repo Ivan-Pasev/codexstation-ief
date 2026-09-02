@@ -1,0 +1,17 @@
+schema_version: CS-IEF-08
+surface_id: gemini-notebook
+surface_version: 0.1.0
+mandatory_invariants:
+  - EFFECTIVE_AUTHORITY_SUBSET_AUTHORIZED
+  - ISOLATION_NOT_AUTHORIZATION
+  - WITNESSED_NOT_TRUE
+  - NO_SILENT_EAC_PROMOTION
+  - NO_AMBIENT_SECRETS
+projection:
+  source_first: true
+  tool_routing: false
+  portable_filesystem: false
+  context_budget: null
+  chunking: source-index-first
+  bootstrap: "Treat source manifests, public repositories, specs, schemas, and releases as the primary knowledge substrate; minimize conversational-memory dependence."
+profile_digest: PENDING_CANONICAL_BUILD
