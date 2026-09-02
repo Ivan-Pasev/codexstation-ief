@@ -11,6 +11,10 @@ Primary documents:
 - specs/CS-IEF-02.md — execution specification/receipt contract
 - specs/CS-IEF-03.md — provider ABI and capability negotiation
 - specs/CS-IEF-04.md — MicrosandboxProvider reference mapping and qualification gates
+- specs/CS-IEF-05.md — fail-closed policy compiler and EAC verifier
+- schemas/policy-decision.schema.json — machine-readable authorization/rejection evidence
+- reference/policy_compiler.py — provider-neutral reference compiler skeleton
+- tests/test_policy_compiler.py — fail-closed reference vectors
 - providers/microsandbox/README.md — reference adapter boundary and status
 - sources/microsandbox.yaml — pinned reference-provider source manifest
 
@@ -20,5 +24,9 @@ Current verified Microsandbox source snapshot:
 Key rules:
 - Microsandbox is a reference provider behind the stable IEF ABI, not the architectural core.
 - Feature support is not assurance evidence.
+- Policy compilation precedes provider materialization.
+- Effective authority may narrow automatically but may never silently widen.
+- Semantic substitutions and degradations require explicit authority.
+- Stale or absent qualification cannot authorize an EAC.
 - No EAC-3 assignment exists until active-environment qualification passes.
 - Provider-specific types must remain below the stable IEF kernel boundary.
