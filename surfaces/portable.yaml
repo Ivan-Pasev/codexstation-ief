@@ -1,0 +1,17 @@
+schema_version: CS-IEF-08
+surface_id: portable
+surface_version: 0.1.0
+mandatory_invariants:
+  - EFFECTIVE_AUTHORITY_SUBSET_AUTHORIZED
+  - ISOLATION_NOT_AUTHORIZATION
+  - WITNESSED_NOT_TRUE
+  - NO_SILENT_EAC_PROMOTION
+  - NO_AMBIENT_SECRETS
+projection:
+  source_first: true
+  tool_routing: false
+  portable_filesystem: true
+  context_budget: null
+  chunking: filesystem-crystals
+  bootstrap: "Operate as a self-describing source/documentation substrate when no runtime provider is available; negotiate execution capabilities only when explicitly connected."
+profile_digest: PENDING_CANONICAL_BUILD
