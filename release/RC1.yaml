@@ -1,23 +1,38 @@
-schema_version: CS-IEF-10
+schema_version: CS-IEF-11-RC1
 release_id: codexstation-omega-portable
 release_version: 0.1.0-rc1
-status: DRAFT_RC
+status: BUILT_HELD_FOR_PLATFORM_QUALIFICATION_AND_TRUST
 spec_root: CS-IEF-10
 omega_version: 0.2.0
 baseline_mode: OMEGA_KNOWLEDGE_ONLY
 execution_provider: NONE
 execution_modes_qualified: []
-eac_claim: NONE
+eac_claim: null
+build:
+  source_revision: 2c433220ecdfbb977a3d4c96b6c326649147c3e9
+  workflow_run_id: 33673649834
+  workflow_artifact_id: 9863487409
+  workflow_conclusion: success
+  workflow_artifact_digest: sha256:18acb4f7c036f1b1dd7702c10e17cd0e1717f031b36620e58552c9a8128a5dbc
+  archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
+  release_digest: sha256:54641842fbbc2096b9ec17d55f58ae0617794e79e01a4e309e314ee4191025b5
+  ci_offline_verification: PASS
+  independent_post_download_integrity_verification: PASS
+  archive_entries: 33
 signing_state: UNSIGNED
 trust_state: UNASSESSED
 platform_qualification:
   overall: UNTESTED
   records: []
 reproducibility:
-  claimed_level: BR1_RECIPE_BOUND
-  independent_reproductions: []
+  claimed_level: BR2_REPEATABLE_SAME_ENV
+  evidenced_level: BR2_REPEATABLE_SAME_ENV
+  same_environment_rebuilds:
+    - archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
+    - archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
+  independent_environment_reproductions: []
 required_artifacts:
-  - release/BUILD_RECIPE.yaml
+  - release/BUILD_RECIPE.portable-rc1.yaml
   - distributions/OMEGA_MANIFEST.yaml
   - schemas/release-manifest.schema.json
   - schemas/installation-receipt.schema.json
@@ -25,13 +40,15 @@ required_artifacts:
   - schemas/platform-qualification.schema.json
   - schemas/trust-root-policy.schema.json
   - reference/portable_runtime.py
+  - release/RC1_BUILD_RESULT.json
 limitations:
-  - no public archive emitted yet
-  - no signed release yet
+  - unsigned release candidate
+  - trust root not yet operationalized for this RC
   - no platform qualified yet
+  - no independent-environment rebuild yet
   - no execution provider qualified by this RC
 claim_boundary:
-  built_does_not_imply_reproduced: true
+  built_does_not_imply_reproduced_independently: true
   signed_does_not_imply_trusted: true
   trusted_does_not_imply_safe: true
   platform_qualified_does_not_imply_provider_eac: true
