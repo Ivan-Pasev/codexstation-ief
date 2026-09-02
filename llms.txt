@@ -13,15 +13,19 @@ Primary documents:
 - specs/CS-IEF-04.md — MicrosandboxProvider reference mapping and qualification gates
 - specs/CS-IEF-05.md — fail-closed policy compiler and EAC verifier
 - specs/CS-IEF-06.md — ResearchCell and FormalProofCell profile contracts
+- specs/CS-IEF-07.md — append-only evidence/IRP witness graph
 - schemas/policy-decision.schema.json — machine-readable authorization/rejection evidence
 - schemas/cell-profile.schema.json — machine-readable research/proof profile contract
 - schemas/evidence-bundle.schema.json — deterministic evidence bundle manifest
+- schemas/witness-record.schema.json — machine-readable witness/provenance record
 - profiles/research/reproducible.yaml — safe reproducible ResearchCell baseline
 - profiles/formal-proof/lean4.yaml — Lean 4 FormalProofCell baseline
 - reference/policy_compiler.py — provider-neutral policy compiler skeleton
 - reference/profile_compiler.py — purpose-profile constructor skeleton
+- reference/witness_graph.py — deterministic append-only witness graph reference
 - tests/test_policy_compiler.py — CS-IEF-05 fail-closed vectors
 - tests/test_profile_compiler.py — CS-IEF-06 profile/claim-boundary vectors
+- tests/test_witness_graph.py — CS-IEF-07 graph/tamper/claim-boundary vectors
 - providers/microsandbox/README.md — reference adapter boundary and status
 - sources/microsandbox.yaml — pinned reference-provider source manifest
 
@@ -33,9 +37,13 @@ Key rules:
 - Feature support is not assurance evidence.
 - Policy compilation precedes provider materialization.
 - Cell profiles constrain/construct ExecutionSpec; profiles never call providers directly.
+- Witness records bind observation, intent, authorization, plan, outcome, evidence, rejection, replication and adjudication without proving semantic truth.
+- W2 authorization binds the exact ProviderPlan; W3 outcome binds the exact ExecutionReceipt and EvidenceBundle.
+- Rejection is a first-class witness result and is not an execution failure.
+- Append-only corrections use new revocation/adjudication records; prior evidence is not rewritten.
+- External anchoring proves only what the external system's anchoring semantics support; it does not make underlying claims true.
 - Effective authority may narrow automatically but may never silently widen.
 - Network remains deny-by-default; research/proof baselines default to no network.
-- Raw guest secrets and mutable host/shared storage are forbidden by default in research/proof profiles.
 - Reproducibility claims cannot exceed captured evidence.
 - FORMALLY_CHECKED is bounded to the pinned external prover target/toolchain/dependencies and does not imply empirical truth, novelty, or peer-review status.
 - Stale or absent qualification cannot authorize an EAC.
