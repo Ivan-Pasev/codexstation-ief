@@ -17,6 +17,7 @@ Primary documents:
 - specs/CS-IEF-08.md — deterministic Ω multi-surface distribution compiler
 - specs/CS-IEF-09.md — portable/local runtime, bootstrap, packaging and installation contract
 - specs/CS-IEF-10.md — release engineering, reproducible build attestation, signing/trust separation and platform qualification
+- specs/CS-IEF-12.md — independent reproduction, platform qualification and RC adjudication
 - schemas/policy-decision.schema.json — machine-readable authorization/rejection evidence
 - schemas/cell-profile.schema.json — machine-readable research/proof profile contract
 - schemas/evidence-bundle.schema.json — deterministic evidence bundle manifest
@@ -36,9 +37,10 @@ Primary documents:
 - surfaces/portable.yaml — portable filesystem Ω profile
 - distributions/OMEGA_MANIFEST.yaml — public Ω composition/invariant manifest
 - release/BUILD_RECIPE.portable-rc1.yaml — provider-free Ω portable RC1 reproducible-build recipe
-- release/PLATFORM_QUALIFICATION.yaml — evidence-bounded platform qualification matrix
-- release/TRUST_ROOT_POLICY.yaml — explicit RC signing/trust policy; RC1 currently unsigned
-- release/RC1.yaml — provider-free portable Ω RC1 declaration and limitations
+- release/PLATFORM_QUALIFICATION.yaml — evidence-bounded exact-RC platform qualification matrix
+- release/TRUST_ROOT_POLICY.yaml — explicit RC signing/trust policy
+- release/RC1.yaml — exact RC1 adjudication state; currently held
+- release/RC1_QUALIFICATION_RESULT.json — cross-platform reproduction and install-qualification evidence
 - reference/policy_compiler.py — provider-neutral policy compiler skeleton
 - reference/profile_compiler.py — purpose-profile constructor skeleton
 - reference/witness_graph.py — deterministic append-only witness graph reference
@@ -59,17 +61,30 @@ Primary documents:
 Current verified Microsandbox source snapshot:
 - e36792dae06edcd9b6f86abd6b83da7a26c7cdf6
 
+Current portable RC adjudication:
+- RC1 source revision: 2c433220ecdfbb977a3d4c96b6c326649147c3e9
+- RC1 status: HOLD_INSTALL_CONTRACT_DEFECT
+- Linux/Windows independent-environment semantic release digest: identical
+- evidenced reproducibility: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
+- cross-platform ZIP bytes: not identical; extracted payload trees are identical
+- exact RC1 Linux knowledge-only installation: FAILED due ReleaseManifest/runtime contract mismatch
+- RC1 is unsigned, untrusted, platform-unqualified and carries no EAC claim
+- corrective target: 0.1.0-rc2
+
 Key rules:
 - There is one canonical Ω and multiple generated surface projections; generated artifacts are not new canon.
-- BUILT != REPRODUCED != ATTESTED != SIGNED != TRUSTED != QUALIFIED != AUTHORIZED.
+- BUILT != REPRODUCED != INSTALLABLE != ATTESTED != SIGNED != TRUSTED != QUALIFIED != AUTHORIZED.
 - A valid signature is cryptographic evidence, not automatic trust, platform qualification, safety or execution authorization.
-- RC1 is explicitly UNSIGNED and UNTESTED until signing and platform evidence exist.
+- Signing never repairs a defective artifact.
+- Same semantic release digest does not imply byte-identical archive.
+- Archive integrity does not imply schema/runtime contract conformance.
+- Cross-platform reproduction does not imply platform installation qualification.
 - Platform support is exact-release evidence; UNTESTED must never be presented as supported.
-- The first portable RC target is provider-free OMEGA_KNOWLEDGE_ONLY and carries no EAC claim.
+- The portable baseline is provider-free OMEGA_KNOWLEDGE_ONLY and carries no EAC claim.
 - Surface adapters may narrow representation/capabilities but may never rewrite constitutional, authority, assurance, witness, security, or claim-boundary semantics.
 - Unavailable capabilities are disclosed/omitted; they are never simulated by prose.
 - Installation is not authorization; provider discovery is not qualification; qualification is not execution authorization.
-- Portable Ω MUST install usefully in OMEGA_KNOWLEDGE_ONLY mode with provider NONE.
+- Portable Ω MUST install usefully in OMEGA_KNOWLEDGE_ONLY mode with provider NONE before release promotion.
 - Release payload and mutable runtime state are separated; generated install state is never canonical source.
 - Provider discovery never assigns EAC. Stale/missing qualification cannot activate a qualified execution mode.
 - Runtime fallback may narrow authority only when explicitly permitted and receipt-recorded; upward fallback is forbidden.
