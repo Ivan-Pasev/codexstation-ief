@@ -1,29 +1,57 @@
-schema_version: CS-IEF-10
+schema_version: CS-IEF-12
 release_target: codexstation-omega-portable-0.1.0-rc1
 matrix:
   - platform_class: linux
     architectures: [x86_64, arm64]
-    knowledge_only: UNTESTED
+    reproduction:
+      x86_64: PASS_GITHUB_UBUNTU
+      arm64: UNTESTED
+    integrity:
+      x86_64: PASS
+    knowledge_only:
+      x86_64: FAILED_RC1_MANIFEST_RUNTIME_CONTRACT
+      arm64: UNTESTED
     policy_only: UNTESTED
     execution_modes: []
     limitations:
-      - no public platform qualification evidence recorded yet
+      - exact RC1 archive integrity passes but packaged knowledge-only installer fails before READY
+      - failure is release-manifest/runtime contract mismatch, not provider qualification
   - platform_class: windows
     architectures: [x86_64, arm64]
-    knowledge_only: UNTESTED
+    reproduction:
+      x86_64: PASS_GITHUB_WINDOWS
+      arm64: UNTESTED
+    integrity:
+      x86_64: PASS
+    knowledge_only:
+      x86_64: NOT_ATTEMPTED
+      arm64: UNTESTED
     policy_only: UNTESTED
     execution_modes: []
     limitations:
-      - no public platform qualification evidence recorded yet
+      - cross-platform semantic reproduction passes
+      - knowledge-only install qualification not executed for exact RC1
   - platform_class: macos
     architectures: [arm64]
-    knowledge_only: UNTESTED
+    reproduction:
+      arm64: UNTESTED
+    knowledge_only:
+      arm64: UNTESTED
     policy_only: UNTESTED
     execution_modes: []
     limitations:
       - no public platform qualification evidence recorded yet
+reproducibility:
+  cross_environment_run_id: 33679584508
+  semantic_release_digest_identical: true
+  extracted_tree_identical: true
+  byte_identical_archive: false
+  evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
+  archive_difference_diagnosis: platform-dependent zip entry ordering from pathlib sorting
 rules:
   provider_name_does_not_assign_eac: true
   knowledge_only_may_qualify_without_execution_provider: true
   execution_mode_requires_current_provider_qualification: true
   untested_must_not_be_presented_as_supported: true
+  build_reproduction_does_not_equal_install_qualification: true
+  semantic_reproduction_does_not_equal_byte_identical_archive: true
