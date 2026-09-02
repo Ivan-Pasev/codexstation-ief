@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexstation.g-i-l-c.com/ief/schemas/witness-record.schema.json",
+  "title": "CS-IEF WitnessRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_id", "record_type", "trace_id", "parent_record_ids", "subject_digests", "actor_or_authority_ref", "sequence", "previous_chain_digest", "record_digest"],
+  "properties": {
+    "schema_version": {"const": "CS-IEF-07"},
+    "record_id": {"type": "string", "minLength": 1},
+    "record_type": {"enum": ["OBSERVATION", "INTENT", "POLICY_DECISION", "AUTHORIZATION", "PROVIDER_PLAN", "MATERIALIZATION", "EXECUTION_OUTCOME", "EVIDENCE_BUNDLE", "REJECTION", "REPLICATION", "ADJUDICATION", "ANCHOR", "REVOCATION"]},
+    "trace_id": {"type": "string", "minLength": 1},
+    "parent_record_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "subject_digests": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "actor_or_authority_ref": {"type": "string", "minLength": 1},
+    "timestamp": {"type": ["string", "null"]},
+    "sequence": {"type": "integer", "minimum": 0},
+    "previous_chain_digest": {"type": ["string", "null"]},
+    "external_anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["system", "anchor_ref"],
+        "properties": {
+          "system": {"type": "string", "minLength": 1},
+          "anchor_ref": {"type": "string", "minLength": 1},
+          "anchored_digest": {"type": "string"}
+        }
+      }
+    },
+    "metadata": {"type": "object"},
+    "record_digest": {"type": "string", "minLength": 1}
+  }
+}
