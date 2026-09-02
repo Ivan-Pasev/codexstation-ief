@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexstation.g-i-l-c.com/ief/schemas/policy-decision.schema.json",
+  "title": "CS-IEF PolicyDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "decision", "compiler_version", "execution_spec_digest", "provider_id", "capabilities_digest", "qualification_digest", "policy_profile", "reasons", "decision_digest"],
+  "properties": {
+    "schema_version": {"const": "CS-IEF-05"},
+    "decision": {"enum": ["AUTHORIZED", "REJECTED"]},
+    "compiler_version": {"type": "string", "minLength": 1},
+    "execution_spec_digest": {"type": "string", "minLength": 1},
+    "provider_id": {"type": "string", "minLength": 1},
+    "provider_abi": {"type": "string"},
+    "capabilities_digest": {"type": "string", "minLength": 1},
+    "qualification_digest": {"type": ["string", "null"]},
+    "policy_profile": {"type": "string", "minLength": 1},
+    "requested_eac": {"type": "integer", "minimum": 0, "maximum": 5},
+    "qualified_eac": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+    "effective_eac": {"type": ["integer", "null"], "minimum": 0, "maximum": 5},
+    "provider_plan_digest": {"type": ["string", "null"]},
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": {"enum": ["PROVIDER_NOT_READY", "CAPABILITY_MISSING", "ENFORCEMENT_TOO_WEAK", "ASSURANCE_INSUFFICIENT", "QUALIFICATION_MISSING", "QUALIFICATION_STALE", "POLICY_FORBIDDEN", "UNAUTHORIZED_DEGRADATION", "AUTHORITY_WIDENING", "SEMANTIC_MISMATCH", "NONDETERMINISTIC_INPUT", "ABI_INCOMPATIBLE"]},
+          "control": {"type": ["string", "null"]},
+          "message": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "degradations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["control", "requested", "effective", "reason", "authority_ref"],
+        "properties": {
+          "control": {"type": "string"},
+          "requested": {},
+          "effective": {},
+          "reason": {"type": "string"},
+          "authority_ref": {"type": "string", "minLength": 1},
+          "security_consequence": {"type": "string"}
+        }
+      }
+    },
+    "toctou_revalidation": {"enum": ["NOT_APPLICABLE", "PENDING", "PASS", "FAIL"]},
+    "decision_digest": {"type": "string", "minLength": 1}
+  }
+}
