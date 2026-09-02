@@ -1,0 +1,25 @@
+{
+  "schema_version": "CS-IEF-13-RC2-DECLARATION",
+  "release_id": "codexstation-omega-portable",
+  "release_version": "0.1.0-rc2",
+  "spec_root": "CS-IEF-13",
+  "omega_version": "0.2.0",
+  "target_surface": "portable",
+  "baseline_mode": "OMEGA_KNOWLEDGE_ONLY",
+  "execution_provider": "NONE",
+  "execution_modes_qualified": [],
+  "eac_claim": null,
+  "signing_state": "UNSIGNED_REFERENCE_RC",
+  "trust_state": "UNASSESSED",
+  "builder": {
+    "id": "codexstation-ief.release.build_portable_rc2",
+    "version": "1.0.0"
+  },
+  "claim_boundary": {
+    "built_does_not_imply_installable": true,
+    "schema_valid_does_not_imply_platform_qualified": true,
+    "platform_qualified_knowledge_only_does_not_imply_execution_qualified": true,
+    "signed_does_not_imply_trusted": true,
+    "release_does_not_authorize_execution": true
+  }
+}
