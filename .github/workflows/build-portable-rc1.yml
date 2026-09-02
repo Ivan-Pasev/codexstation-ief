@@ -1,0 +1,178 @@
+name: build-portable-rc1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-portable-rc1.yml'
+      - 'README.md'
+      - 'ARCHITECTURE.md'
+      - 'SECURITY.md'
+      - 'GOVERNANCE.md'
+      - 'llms.txt'
+      - 'specs/**'
+      - 'schemas/**'
+      - 'surfaces/portable.yaml'
+      - 'distributions/OMEGA_MANIFEST.yaml'
+      - 'reference/portable_runtime.py'
+      - 'release/BUILD_RECIPE.portable-rc1.yaml'
+      - 'release/RC1.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Build deterministic provider-free RC1 twice and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from __future__ import annotations
+          import hashlib, json, pathlib, shutil, zipfile
+
+          ROOT = pathlib.Path.cwd()
+          VERSION = '0.1.0-rc1'
+          NAME = f'codexstation-omega-portable-{VERSION}'
+          INCLUDE_FILES = [
+              'README.md', 'ARCHITECTURE.md', 'SECURITY.md', 'GOVERNANCE.md', 'llms.txt',
+              'surfaces/portable.yaml', 'distributions/OMEGA_MANIFEST.yaml',
+              'reference/portable_runtime.py', 'release/BUILD_RECIPE.portable-rc1.yaml',
+              'release/RC1.yaml',
+          ]
+          INCLUDE_DIRS = ['specs', 'schemas']
+
+          def sha256_bytes(b: bytes) -> str:
+              return hashlib.sha256(b).hexdigest()
+
+          def normalized_bytes(path: pathlib.Path) -> bytes:
+              data = path.read_bytes()
+              try:
+                  text = data.decode('utf-8').replace('\r\n','\n').replace('\r','\n')
+                  return text.encode('utf-8')
+              except UnicodeDecodeError:
+                  return data
+
+          def source_paths():
+              rows = []
+              for rel in INCLUDE_FILES:
+                  p = ROOT / rel
+                  if not p.is_file():
+                      raise SystemExit(f'MISSING_REQUIRED:{rel}')
+                  rows.append(rel)
+              for d in INCLUDE_DIRS:
+                  for p in sorted((ROOT/d).rglob('*')):
+                      if p.is_file(): rows.append(p.relative_to(ROOT).as_posix())
+              return sorted(set(rows))
+
+          def build(outroot: pathlib.Path):
+              tree = outroot / NAME
+              if outroot.exists(): shutil.rmtree(outroot)
+              tree.mkdir(parents=True)
+              inventory = []
+              for rel in source_paths():
+                  data = normalized_bytes(ROOT/rel)
+                  dst = tree/rel
+                  dst.parent.mkdir(parents=True, exist_ok=True)
+                  dst.write_bytes(data)
+                  inventory.append({'path': rel, 'sha256': sha256_bytes(data), 'size': len(data)})
+
+              version_bytes = (VERSION+'\n').encode()
+              (tree/'VERSION').write_bytes(version_bytes)
+              inventory.append({'path':'VERSION','sha256':sha256_bytes(version_bytes),'size':len(version_bytes)})
+
+              manifest_core = {
+                  'schema_version':'CS-IEF-10',
+                  'release_id':'codexstation-omega-portable',
+                  'release_version':VERSION,
+                  'spec_root':'CS-IEF-10',
+                  'omega_version':'0.2.0',
+                  'source_repository':'https://github.com/Ivan-Pasev/codexstation-ief',
+                  'source_revision':'${{ github.sha }}',
+                  'provider':'NONE',
+                  'baseline_mode':'OMEGA_KNOWLEDGE_ONLY',
+                  'signing_status':'UNSIGNED_REFERENCE_RC',
+                  'platform_qualification':'UNTESTED',
+                  'execution_modes_qualified':[],
+                  'eac_claim':None,
+                  'artifacts':sorted(inventory,key=lambda x:x['path']),
+              }
+              canonical = json.dumps(manifest_core,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+              manifest = {**manifest_core,'release_digest':'sha256:'+sha256_bytes(canonical)}
+              manifest_bytes = (json.dumps(manifest,sort_keys=True,indent=2,ensure_ascii=False)+'\n').encode()
+              (tree/'MANIFEST.json').write_bytes(manifest_bytes)
+
+              lines=[]
+              for row in sorted(inventory,key=lambda x:x['path']):
+                  lines.append(f"{row['sha256']}  {row['path']}")
+              lines.append(f"{sha256_bytes(manifest_bytes)}  MANIFEST.json")
+              integrity=('\n'.join(lines)+'\n').encode()
+              (tree/'INTEGRITY.sha256').write_bytes(integrity)
+
+              archive=outroot/f'{NAME}.zip'
+              files=sorted(p for p in tree.rglob('*') if p.is_file())
+              with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+                  for p in files:
+                      rel=f'{NAME}/{p.relative_to(tree).as_posix()}'
+                      info=zipfile.ZipInfo(rel,date_time=(1980,1,1,0,0,0))
+                      info.compress_type=zipfile.ZIP_DEFLATED
+                      info.create_system=3
+                      info.external_attr=(0o100644 << 16)
+                      z.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
+              return archive, manifest
+
+          a, ma = build(ROOT/'dist-a')
+          b, mb = build(ROOT/'dist-b')
+          da=sha256_bytes(a.read_bytes()); db=sha256_bytes(b.read_bytes())
+          if da != db: raise SystemExit(f'NON_REPRODUCIBLE_ARCHIVE:{da}:{db}')
+          if ma['release_digest'] != mb['release_digest']: raise SystemExit('NON_REPRODUCIBLE_MANIFEST')
+
+          # Independent offline verification by reading archive contents only.
+          with zipfile.ZipFile(a,'r') as z:
+              names=z.namelist()
+              prefix=NAME+'/'
+              manifest=json.loads(z.read(prefix+'MANIFEST.json'))
+              integrity=z.read(prefix+'INTEGRITY.sha256').decode().splitlines()
+              for line in integrity:
+                  h, rel=line.split('  ',1)
+                  observed=sha256_bytes(z.read(prefix+rel))
+                  if observed != h: raise SystemExit(f'OFFLINE_VERIFY_FAIL:{rel}')
+              if manifest['provider'] != 'NONE': raise SystemExit('PROVIDER_NOT_NONE')
+              if manifest['baseline_mode'] != 'OMEGA_KNOWLEDGE_ONLY': raise SystemExit('BASELINE_MODE_INVALID')
+              if manifest['eac_claim'] is not None: raise SystemExit('EAC_OVERCLAIM')
+
+          out=ROOT/'release-artifacts'
+          out.mkdir(exist_ok=True)
+          shutil.copy2(a,out/a.name)
+          shutil.copy2(ROOT/'dist-a'/NAME/'MANIFEST.json',out/'MANIFEST.json')
+          shutil.copy2(ROOT/'dist-a'/NAME/'INTEGRITY.sha256',out/'INTEGRITY.sha256')
+          result={
+              'source_revision':'${{ github.sha }}',
+              'archive_sha256':'sha256:'+da,
+              'release_digest':ma['release_digest'],
+              'rebuild_archive_sha256':'sha256:'+db,
+              'archive_reproducible':da==db,
+              'offline_verify':'PASS',
+              'provider':'NONE','mode':'OMEGA_KNOWLEDGE_ONLY','eac_claim':None,
+              'signing_status':'UNSIGNED_REFERENCE_RC','platform_qualification':'UNTESTED'
+          }
+          (out/'BUILD_RESULT.json').write_text(json.dumps(result,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(result,indent=2))
+          PY
+
+      - name: Upload RC1 evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: codexstation-omega-portable-0.1.0-rc1
+          path: release-artifacts/
+          if-no-files-found: error
+          retention-days: 90
