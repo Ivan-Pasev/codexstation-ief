@@ -103,7 +103,7 @@ jobs:
           path: compare/Windows
 
       - name: Compare independent platform builds
-        run: python release/compare_portable_rc2.py compare/Linux/codexstation-omega-portable-0.1.0-rc2.zip compare/Windows/codexstation-omega-portable-0.1.0-rc2.zip --output compare/CROSS_PLATFORM_RESULT.json
+        run: python release/compare_portable_rc2.py compare/Linux/rc2-out/codexstation-omega-portable-0.1.0-rc2.zip compare/Windows/rc2-out/codexstation-omega-portable-0.1.0-rc2.zip --output compare/CROSS_PLATFORM_RESULT.json
 
       - name: Upload cross-platform adjudication evidence
         uses: actions/upload-artifact@v4
