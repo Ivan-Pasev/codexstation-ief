@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g-i-l-c.com/codexstation/ief/schemas/release-manifest.schema.json",
+  "title": "CS-IEF-09 ReleaseManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","release_id","release_version","spec_root","omega_version","distribution_bundle_digest","compiler","artifacts","supported_platform_classes","source_graph_digest","release_digest"],
+  "properties": {
+    "schema_version": {"const": "CS-IEF-09"},
+    "release_id": {"type":"string","minLength":1},
+    "release_version": {"type":"string","minLength":1},
+    "spec_root": {"type":"string","minLength":1},
+    "omega_version": {"type":"string","minLength":1},
+    "distribution_bundle_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "compiler": {"type":"object","required":["id","version"],"properties":{"id":{"type":"string"},"version":{"type":"string"}},"additionalProperties":false},
+    "artifacts": {"type":"array","items":{"type":"object","required":["path","type","digest"],"properties":{"path":{"type":"string"},"type":{"type":"string"},"digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}},"additionalProperties":false}},
+    "supported_platform_classes": {"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "required_bootstrap_capabilities": {"type":"array","items":{"type":"string"},"uniqueItems":true,"default":[]},
+    "optional_provider_adapters": {"type":"array","items":{"type":"string"},"uniqueItems":true,"default":[]},
+    "provider_qualification_requirements": {"type":"array","items":{"type":"string"},"default":[]},
+    "source_graph_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "license_metadata": {"type":"object"},
+    "build_provenance_ref": {"type":["string","null"]},
+    "release_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+  }
+}
