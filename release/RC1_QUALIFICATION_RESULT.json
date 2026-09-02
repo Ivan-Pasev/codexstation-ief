@@ -1,0 +1,61 @@
+{
+  "schema_version": "CS-IEF-12-RC1-QUALIFICATION",
+  "release_id": "codexstation-omega-portable",
+  "release_version": "0.1.0-rc1",
+  "source_revision": "2c433220ecdfbb977a3d4c96b6c326649147c3e9",
+  "promotion_decision": "HOLD",
+  "hold_reasons": [
+    "PACKAGED_RUNTIME_MANIFEST_CONTRACT_MISMATCH",
+    "RELEASE_MANIFEST_SCHEMA_NONCONFORMANCE",
+    "CROSS_PLATFORM_ARCHIVE_BYTES_DIFFER"
+  ],
+  "reproducibility": {
+    "workflow_run_id": 33679584508,
+    "linux": {
+      "runner": "ubuntu-latest",
+      "archive_sha256": "sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5",
+      "release_digest": "sha256:54641842fbbc2096b9ec17d55f58ae0617794e79e01a4e309e314ee4191025b5",
+      "offline_verify": "PASS"
+    },
+    "windows": {
+      "runner": "windows-latest",
+      "archive_sha256": "sha256:f0fde599a3b1e8f4f597c3d5fe2244308f535a778f3b426d94738aba3ea33071",
+      "release_digest": "sha256:54641842fbbc2096b9ec17d55f58ae0617794e79e01a4e309e314ee4191025b5",
+      "offline_verify": "PASS"
+    },
+    "extracted_tree_identical": true,
+    "semantic_release_digest_identical": true,
+    "archive_byte_identical": false,
+    "archive_byte_difference_diagnosis": "zip entry ordering differs across pathlib sorting semantics on Linux versus Windows; extracted payload bytes are identical",
+    "evidenced_level": "BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC",
+    "byte_identical_archive_claim": false
+  },
+  "platform_qualification": {
+    "linux": {
+      "knowledge_only_install": "FAILED",
+      "integrity_inventory": "PASS",
+      "failure": {
+        "primary": "generated MANIFEST.json artifact rows use sha256 while packaged reference/portable_runtime.py expects digest",
+        "secondary": "generated MANIFEST.json omits distribution_bundle_digest required by packaged portable runtime",
+        "schema": "generated MANIFEST.json does not conform to schemas/release-manifest.schema.json required fields"
+      }
+    },
+    "windows": {
+      "knowledge_only_install": "NOT_ATTEMPTED",
+      "build_reproduction": "PASS",
+      "offline_integrity": "PASS"
+    },
+    "macos": {
+      "knowledge_only_install": "NOT_ATTEMPTED"
+    }
+  },
+  "claim_boundary": {
+    "cross_platform_reproduction_does_not_equal_platform_install_qualification": true,
+    "semantic_reproduction_does_not_equal_byte_identical_archive": true,
+    "integrity_pass_does_not_equal_runtime_contract_conformance": true,
+    "signed": false,
+    "trusted": false,
+    "execution_authorized": false,
+    "eac_claim": null
+  }
+}
