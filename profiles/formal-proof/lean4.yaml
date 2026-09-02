@@ -1,0 +1,41 @@
+profile_id: formal-proof.lean4
+profile_version: 0.1.0
+profile_type: FORMAL_PROOF
+purpose: External Lean 4 theorem checking under pinned prover and dependency identity.
+reproducibility_mode: R2_PINNED_TOOLCHAIN
+network_default: NONE
+persistence_default: EPHEMERAL
+raw_secrets_allowed: false
+mutable_host_bind_default: false
+shared_mutable_default: false
+evidence_requirements:
+  - proof_manifest_digest
+  - source_digest
+  - dependency_manifest_digest
+  - prover_version
+  - exact_invocation
+  - prover_exit_status
+  - normalized_prover_output_digest
+  - theorem_target
+  - execution_spec_digest
+  - provider_plan_digest
+  - execution_receipt_digest
+policy_defaults:
+  filesystem:
+    immutable_inputs: true
+    ephemeral_workspace: true
+    controlled_export_only: true
+  network:
+    mode: NONE
+  persistence:
+    mode: EPHEMERAL
+  secrets:
+    raw_guest_secrets: FORBIDDEN
+claim_boundary:
+  success_status: FORMALLY_CHECKED
+  does_not_imply:
+    - empirical_truth
+    - novelty
+    - correctness_of_informal_assumptions
+    - peer_review_status
+    - publication_readiness
