@@ -1,7 +1,7 @@
-schema_version: CS-IEF-11-RC1
+schema_version: CS-IEF-12-RC1
 release_id: codexstation-omega-portable
 release_version: 0.1.0-rc1
-status: BUILT_HELD_FOR_PLATFORM_QUALIFICATION_AND_TRUST
+status: HOLD_INSTALL_CONTRACT_DEFECT
 spec_root: CS-IEF-10
 omega_version: 0.2.0
 baseline_mode: OMEGA_KNOWLEDGE_ONLY
@@ -13,7 +13,6 @@ build:
   workflow_run_id: 33673649834
   workflow_artifact_id: 9863487409
   workflow_conclusion: success
-  workflow_artifact_digest: sha256:18acb4f7c036f1b1dd7702c10e17cd0e1717f031b36620e58552c9a8128a5dbc
   archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
   release_digest: sha256:54641842fbbc2096b9ec17d55f58ae0617794e79e01a4e309e314ee4191025b5
   ci_offline_verification: PASS
@@ -22,34 +21,61 @@ build:
 signing_state: UNSIGNED
 trust_state: UNASSESSED
 platform_qualification:
-  overall: UNTESTED
-  records: []
+  overall: FAILED_RC1_KNOWLEDGE_ONLY_INSTALL
+  records:
+    - platform: linux
+      reproduction: PASS
+      integrity: PASS
+      knowledge_only_install: FAILED
+      reason: packaged runtime/release manifest contract mismatch
+    - platform: windows
+      reproduction: PASS
+      integrity: PASS
+      knowledge_only_install: NOT_ATTEMPTED
+    - platform: macos
+      reproduction: NOT_ATTEMPTED
+      knowledge_only_install: NOT_ATTEMPTED
 reproducibility:
-  claimed_level: BR2_REPEATABLE_SAME_ENV
-  evidenced_level: BR2_REPEATABLE_SAME_ENV
-  same_environment_rebuilds:
-    - archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
-    - archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
-  independent_environment_reproductions: []
-required_artifacts:
-  - release/BUILD_RECIPE.portable-rc1.yaml
-  - distributions/OMEGA_MANIFEST.yaml
-  - schemas/release-manifest.schema.json
-  - schemas/installation-receipt.schema.json
-  - schemas/build-attestation.schema.json
-  - schemas/platform-qualification.schema.json
-  - schemas/trust-root-policy.schema.json
-  - reference/portable_runtime.py
-  - release/RC1_BUILD_RESULT.json
+  claimed_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
+  evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV_SEMANTIC
+  cross_environment_run_id: 33679584508
+  linux_archive_sha256: sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5
+  windows_archive_sha256: sha256:f0fde599a3b1e8f4f597c3d5fe2244308f535a778f3b426d94738aba3ea33071
+  release_digest_both: sha256:54641842fbbc2096b9ec17d55f58ae0617794e79e01a4e309e314ee4191025b5
+  extracted_tree_identical: true
+  archive_byte_identical: false
+  archive_difference: zip entry ordering differs across platform pathlib ordering; payload tree is identical
+qualification_defects:
+  - id: RC1-MANIFEST-001
+    severity: blocking
+    detail: generated MANIFEST.json artifact rows use sha256 while schemas/release-manifest.schema.json and packaged portable_runtime.py use digest
+  - id: RC1-MANIFEST-002
+    severity: blocking
+    detail: generated MANIFEST.json omits distribution_bundle_digest required by packaged portable runtime and canonical release contract
+  - id: RC1-SCHEMA-003
+    severity: blocking
+    detail: generated MANIFEST.json omits additional required release-manifest fields including compiler, supported_platform_classes, and source_graph_digest
+  - id: RC1-ARCHIVE-004
+    severity: nonblocking_for_semantic_reproduction
+    detail: archive entry ordering is platform-dependent, preventing byte-identical cross-platform ZIPs
+promotion:
+  decision: HOLD
+  next_candidate: 0.1.0-rc2
+  required_fixes:
+    - emit canonical release-manifest schema fields and digest naming
+    - validate release manifest before packaging
+    - exercise packaged knowledge-only installer in CI
+    - normalize archive ordering by explicit POSIX relative-path sort key
+    - repeat Linux/Windows reproduction and install qualification
 limitations:
   - unsigned release candidate
-  - trust root not yet operationalized for this RC
-  - no platform qualified yet
-  - no independent-environment rebuild yet
+  - trust root not operationalized for this RC
+  - no platform qualifies knowledge-only installation for RC1
   - no execution provider qualified by this RC
 claim_boundary:
-  built_does_not_imply_reproduced_independently: true
+  built_does_not_imply_installable: true
+  reproduced_does_not_imply_platform_qualified: true
+  semantic_reproduction_does_not_imply_byte_identical_archive: true
   signed_does_not_imply_trusted: true
   trusted_does_not_imply_safe: true
-  platform_qualified_does_not_imply_provider_eac: true
   release_does_not_authorize_execution: true
