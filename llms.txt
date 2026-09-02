@@ -1,0 +1,15 @@
+# CodexStation IEF
+
+Canonical public source for the CodexStation Isolated Execution Fabric.
+
+Primary documents:
+- README.md — project overview and invariants
+- ARCHITECTURE.md — execution architecture and assurance classes
+- GOVERNANCE.md — public/private promotion doctrine
+- SECURITY.md — security invariants
+- ROADMAP.md — specification progression
+- specs/CS-IEF-02.md — execution specification/receipt contract
+- specs/CS-IEF-03.md — provider ABI and capability negotiation
+- sources/microsandbox.yaml — reference provider source manifest
+
+Key rule: Microsandbox is a reference provider behind the stable IEF ABI, not the architectural core.
