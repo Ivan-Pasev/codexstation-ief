@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://g-i-l-c.com/codexstation/ief/schemas/platform-qualification.schema.json",
+  "title":"CS-IEF-10 PlatformQualification",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","platform_class","architecture","release_digest","bootstrap_mode","outcome","test_results","qualification_digest"],
+  "properties":{
+    "schema_version":{"const":"CS-IEF-10"},
+    "platform_class":{"type":"string","minLength":1},
+    "architecture":{"type":"string","minLength":1},
+    "os_runtime":{"type":"string"},
+    "installer_version":{"type":"string"},
+    "verifier_version":{"type":"string"},
+    "release_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "bootstrap_mode":{"type":"string"},
+    "provider_mode":{"type":["string","null"]},
+    "test_results":{"type":"array","items":{"type":"object","required":["id","outcome"],"properties":{"id":{"type":"string"},"outcome":{"enum":["PASS","FAIL","SKIPPED","UNKNOWN"]},"evidence_ref":{"type":["string","null"]}},"additionalProperties":false}},
+    "limitations":{"type":"array","items":{"type":"string"}},
+    "outcome":{"enum":["UNTESTED","PARTIAL","QUALIFIED_KNOWLEDGE_ONLY","QUALIFIED_POLICY_ONLY","QUALIFIED_EXECUTION_MODE","FAILED"]},
+    "qualification_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+  }
+}
