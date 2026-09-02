@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexstation.g-i-l-c.com/ief/schemas/evidence-bundle.schema.json",
+  "title": "CS-IEF EvidenceBundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "bundle_id", "bundle_type", "profile_id", "profile_version", "profile_digest", "execution_spec_digest", "execution_receipt_digest", "artifacts", "reproducibility_claimed", "reproducibility_achieved", "bundle_digest"],
+  "properties": {
+    "schema_version": {"const": "CS-IEF-06"},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "bundle_type": {"enum": ["RESEARCH", "FORMAL_PROOF"]},
+    "profile_id": {"type": "string"},
+    "profile_version": {"type": "string"},
+    "profile_digest": {"type": "string"},
+    "intent_trace_ref": {"type": ["string", "null"]},
+    "execution_spec_digest": {"type": "string"},
+    "policy_decision_digest": {"type": ["string", "null"]},
+    "provider_plan_digest": {"type": ["string", "null"]},
+    "execution_receipt_digest": {"type": "string"},
+    "source_manifest_digests": {"type": "array", "items": {"type": "string"}},
+    "runtime_toolchain_manifest_digest": {"type": ["string", "null"]},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path_or_id", "digest", "artifact_class"],
+        "properties": {
+          "path_or_id": {"type": "string"},
+          "digest": {"type": "string"},
+          "artifact_class": {"type": "string"},
+          "media_type": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "reproducibility_claimed": {"enum": ["R0_EXPLORATORY", "R1_PINNED_INPUTS", "R2_PINNED_TOOLCHAIN", "R3_DETERMINISTIC_REPLAY", "R4_INDEPENDENT_REPLICATION"]},
+    "reproducibility_achieved": {"enum": ["R0_EXPLORATORY", "R1_PINNED_INPUTS", "R2_PINNED_TOOLCHAIN", "R3_DETERMINISTIC_REPLAY", "R4_INDEPENDENT_REPLICATION"]},
+    "replication": {
+      "type": ["object", "null"],
+      "properties": {
+        "independence_dimension": {"type": "string"},
+        "comparison_method": {"type": "string"},
+        "outcome": {"enum": ["MATCH", "MATERIAL_DIFFERENCE", "INCONCLUSIVE", "NOT_RUN"]},
+        "peer_bundle_digest": {"type": ["string", "null"]}
+      }
+    },
+    "deviations": {"type": "array", "items": {"type": "string"}},
+    "degradations": {"type": "array", "items": {"type": "string"}},
+    "bundle_digest": {"type": "string", "minLength": 1}
+  }
+}
