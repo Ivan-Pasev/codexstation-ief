@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://g-i-l-c.com/codexstation/ief/schemas/installation-receipt.schema.json",
+  "title": "CS-IEF-09 InstallationReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","release_digest","distribution_bundle_digest","installation_id","platform_facts_digest","configuration_digest","requested_mode","effective_mode","discovered_providers","phase_outcomes","terminal_state","receipt_digest"],
+  "properties": {
+    "schema_version": {"const":"CS-IEF-09"},
+    "release_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "distribution_bundle_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "installation_id": {"type":"string","minLength":1},
+    "platform_facts_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "configuration_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "discovered_providers": {"type":"array","items":{"type":"object"}},
+    "qualification_refs": {"type":"array","items":{"type":"string"},"default":[]},
+    "requested_mode": {"enum":["OMEGA_KNOWLEDGE_ONLY","OMEGA_POLICY_ONLY","IEF_HOST_PROCESS","IEF_CONTAINER","IEF_MICROVM","IEF_REMOTE"]},
+    "effective_mode": {"enum":["OMEGA_KNOWLEDGE_ONLY","OMEGA_POLICY_ONLY","IEF_HOST_PROCESS","IEF_CONTAINER","IEF_MICROVM","IEF_REMOTE","NONE"]},
+    "selected_provider": {"type":["string","null"]},
+    "omissions": {"type":"array","items":{"type":"string"},"default":[]},
+    "degradations": {"type":"array","items":{"type":"string"},"default":[]},
+    "phase_outcomes": {"type":"object"},
+    "installed_artifact_manifest_digest": {"type":["string","null"],"pattern":"^sha256:[0-9a-f]{64}$"},
+    "terminal_state": {"enum":["READY","REJECTED"]},
+    "receipt_digest": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+  }
+}
