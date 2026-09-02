@@ -14,18 +14,28 @@ Primary documents:
 - specs/CS-IEF-05.md — fail-closed policy compiler and EAC verifier
 - specs/CS-IEF-06.md — ResearchCell and FormalProofCell profile contracts
 - specs/CS-IEF-07.md — append-only evidence/IRP witness graph
+- specs/CS-IEF-08.md — deterministic Ω multi-surface distribution compiler
 - schemas/policy-decision.schema.json — machine-readable authorization/rejection evidence
 - schemas/cell-profile.schema.json — machine-readable research/proof profile contract
 - schemas/evidence-bundle.schema.json — deterministic evidence bundle manifest
 - schemas/witness-record.schema.json — machine-readable witness/provenance record
+- schemas/surface-profile.schema.json — target-surface projection contract
+- schemas/distribution-bundle.schema.json — compiled distribution/integrity contract
 - profiles/research/reproducible.yaml — safe reproducible ResearchCell baseline
 - profiles/formal-proof/lean4.yaml — Lean 4 FormalProofCell baseline
+- surfaces/chatgpt.yaml — ChatGPT Ω projection profile
+- surfaces/gemini.yaml — Gemini Ω projection profile
+- surfaces/gemini-notebook.yaml — source-first Gemini Notebook Ω profile
+- surfaces/portable.yaml — portable filesystem Ω profile
+- distributions/OMEGA_MANIFEST.yaml — public Ω composition/invariant manifest
 - reference/policy_compiler.py — provider-neutral policy compiler skeleton
 - reference/profile_compiler.py — purpose-profile constructor skeleton
 - reference/witness_graph.py — deterministic append-only witness graph reference
+- reference/omega_compiler.py — deterministic multi-surface projection skeleton
 - tests/test_policy_compiler.py — CS-IEF-05 fail-closed vectors
 - tests/test_profile_compiler.py — CS-IEF-06 profile/claim-boundary vectors
 - tests/test_witness_graph.py — CS-IEF-07 graph/tamper/claim-boundary vectors
+- tests/test_omega_compiler.py — CS-IEF-08 determinism/drift/capability vectors
 - providers/microsandbox/README.md — reference adapter boundary and status
 - sources/microsandbox.yaml — pinned reference-provider source manifest
 
@@ -33,6 +43,13 @@ Current verified Microsandbox source snapshot:
 - e36792dae06edcd9b6f86abd6b83da7a26c7cdf6
 
 Key rules:
+- There is one canonical Ω and multiple generated surface projections; generated artifacts are not new canon.
+- Surface adapters may narrow representation/capabilities but may never rewrite constitutional, authority, assurance, witness, security, or claim-boundary semantics.
+- Unavailable capabilities are disclosed/omitted; they are never simulated by prose.
+- ChatGPT/Gemini tool availability is a runtime capability fact, not a permanent prompt assumption.
+- Gemini Notebook is source-first and should depend on explicit repository/source manifests rather than conversational memory.
+- Portable Ω remains useful as documentation/source substrate even with no execution provider connected.
+- Distribution digests change when canonical components, source refs, surface profiles, capability manifests, compiler version, or selected domain crystals change.
 - Microsandbox is a reference provider behind the stable IEF ABI, not the architectural core.
 - Feature support is not assurance evidence.
 - Policy compilation precedes provider materialization.
