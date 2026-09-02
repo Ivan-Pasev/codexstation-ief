@@ -1,0 +1,38 @@
+schema_version: CS-IEF-10
+release_id: codexstation-omega-portable
+release_version: 0.1.0-rc1
+status: DRAFT_RC
+spec_root: CS-IEF-10
+omega_version: 0.2.0
+baseline_mode: OMEGA_KNOWLEDGE_ONLY
+execution_provider: NONE
+execution_modes_qualified: []
+eac_claim: NONE
+signing_state: UNSIGNED
+trust_state: UNASSESSED
+platform_qualification:
+  overall: UNTESTED
+  records: []
+reproducibility:
+  claimed_level: BR1_RECIPE_BOUND
+  independent_reproductions: []
+required_artifacts:
+  - release/BUILD_RECIPE.yaml
+  - distributions/OMEGA_MANIFEST.yaml
+  - schemas/release-manifest.schema.json
+  - schemas/installation-receipt.schema.json
+  - schemas/build-attestation.schema.json
+  - schemas/platform-qualification.schema.json
+  - schemas/trust-root-policy.schema.json
+  - reference/portable_runtime.py
+limitations:
+  - no public archive emitted yet
+  - no signed release yet
+  - no platform qualified yet
+  - no execution provider qualified by this RC
+claim_boundary:
+  built_does_not_imply_reproduced: true
+  signed_does_not_imply_trusted: true
+  trusted_does_not_imply_safe: true
+  platform_qualified_does_not_imply_provider_eac: true
+  release_does_not_authorize_execution: true
