@@ -1,0 +1,131 @@
+name: qualify-portable-rc1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qualify-portable-rc1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout exact RC1 source revision
+        uses: actions/checkout@v4
+        with:
+          ref: 2c433220ecdfbb977a3d4c96b6c326649147c3e9
+          persist-credentials: false
+
+      - name: Build deterministic provider-free RC1
+        shell: bash
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from __future__ import annotations
+          import hashlib, json, pathlib, shutil, zipfile
+          ROOT=pathlib.Path.cwd(); VERSION='0.1.0-rc1'; NAME=f'codexstation-omega-portable-{VERSION}'
+          INCLUDE_FILES=['README.md','ARCHITECTURE.md','SECURITY.md','GOVERNANCE.md','llms.txt','surfaces/portable.yaml','distributions/OMEGA_MANIFEST.yaml','reference/portable_runtime.py','release/BUILD_RECIPE.portable-rc1.yaml','release/RC1.yaml']
+          INCLUDE_DIRS=['specs','schemas']
+          def h(b): return hashlib.sha256(b).hexdigest()
+          def nb(p):
+              d=p.read_bytes()
+              try: return d.decode('utf-8').replace('\r\n','\n').replace('\r','\n').encode('utf-8')
+              except UnicodeDecodeError: return d
+          def paths():
+              x=[]
+              for r in INCLUDE_FILES:
+                  if not (ROOT/r).is_file(): raise SystemExit('MISSING_REQUIRED:'+r)
+                  x.append(r)
+              for d in INCLUDE_DIRS:
+                  for p in sorted((ROOT/d).rglob('*')):
+                      if p.is_file(): x.append(p.relative_to(ROOT).as_posix())
+              return sorted(set(x))
+          out=ROOT/'qualify-out'; tree=out/NAME
+          if out.exists(): shutil.rmtree(out)
+          tree.mkdir(parents=True)
+          inv=[]
+          for r in paths():
+              d=nb(ROOT/r); dst=tree/r; dst.parent.mkdir(parents=True,exist_ok=True); dst.write_bytes(d); inv.append({'path':r,'sha256':h(d),'size':len(d)})
+          vb=(VERSION+'\n').encode(); (tree/'VERSION').write_bytes(vb); inv.append({'path':'VERSION','sha256':h(vb),'size':len(vb)})
+          core={'schema_version':'CS-IEF-10','release_id':'codexstation-omega-portable','release_version':VERSION,'spec_root':'CS-IEF-10','omega_version':'0.2.0','source_repository':'https://github.com/Ivan-Pasev/codexstation-ief','source_revision':'2c433220ecdfbb977a3d4c96b6c326649147c3e9','provider':'NONE','baseline_mode':'OMEGA_KNOWLEDGE_ONLY','signing_status':'UNSIGNED_REFERENCE_RC','platform_qualification':'UNTESTED','execution_modes_qualified':[],'eac_claim':None,'artifacts':sorted(inv,key=lambda x:x['path'])}
+          canonical=json.dumps(core,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode(); manifest={**core,'release_digest':'sha256:'+h(canonical)}
+          mb=(json.dumps(manifest,sort_keys=True,indent=2,ensure_ascii=False)+'\n').encode(); (tree/'MANIFEST.json').write_bytes(mb)
+          lines=[f"{r['sha256']}  {r['path']}" for r in sorted(inv,key=lambda x:x['path'])]; lines.append(f"{h(mb)}  MANIFEST.json"); (tree/'INTEGRITY.sha256').write_bytes(('\n'.join(lines)+'\n').encode())
+          arc=out/f'{NAME}.zip'
+          with zipfile.ZipFile(arc,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for p in sorted(p for p in tree.rglob('*') if p.is_file()):
+                  rel=f'{NAME}/{p.relative_to(tree).as_posix()}'; info=zipfile.ZipInfo(rel,date_time=(1980,1,1,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED; info.create_system=3; info.external_attr=(0o100644<<16); z.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
+          result={'runner_os':'Linux','archive_sha256':'sha256:'+h(arc.read_bytes()),'release_digest':manifest['release_digest'],'source_revision':core['source_revision'],'offline_verify':'PENDING'}
+          with zipfile.ZipFile(arc,'r') as z:
+              prefix=NAME+'/';
+              for line in z.read(prefix+'INTEGRITY.sha256').decode().splitlines():
+                  hh,rel=line.split('  ',1)
+                  if h(z.read(prefix+rel))!=hh: raise SystemExit('OFFLINE_VERIFY_FAIL:'+rel)
+          result['offline_verify']='PASS'; (out/'QUALIFICATION_RESULT.json').write_text(json.dumps(result,sort_keys=True,indent=2)+'\n',encoding='utf-8'); print(json.dumps(result,indent=2))
+          PY
+
+      - name: Build deterministic provider-free RC1 on Windows
+        shell: pwsh
+        if: runner.os == 'Windows'
+        run: |
+          @'
+          from __future__ import annotations
+          import hashlib, json, pathlib, shutil, zipfile
+          ROOT=pathlib.Path.cwd(); VERSION='0.1.0-rc1'; NAME=f'codexstation-omega-portable-{VERSION}'
+          INCLUDE_FILES=['README.md','ARCHITECTURE.md','SECURITY.md','GOVERNANCE.md','llms.txt','surfaces/portable.yaml','distributions/OMEGA_MANIFEST.yaml','reference/portable_runtime.py','release/BUILD_RECIPE.portable-rc1.yaml','release/RC1.yaml']
+          INCLUDE_DIRS=['specs','schemas']
+          def h(b): return hashlib.sha256(b).hexdigest()
+          def nb(p):
+              d=p.read_bytes()
+              try: return d.decode('utf-8').replace('\r\n','\n').replace('\r','\n').encode('utf-8')
+              except UnicodeDecodeError: return d
+          def paths():
+              x=[]
+              for r in INCLUDE_FILES:
+                  if not (ROOT/r).is_file(): raise SystemExit('MISSING_REQUIRED:'+r)
+                  x.append(r)
+              for d in INCLUDE_DIRS:
+                  for p in sorted((ROOT/d).rglob('*')):
+                      if p.is_file(): x.append(p.relative_to(ROOT).as_posix())
+              return sorted(set(x))
+          out=ROOT/'qualify-out'; tree=out/NAME
+          if out.exists(): shutil.rmtree(out)
+          tree.mkdir(parents=True)
+          inv=[]
+          for r in paths():
+              d=nb(ROOT/r); dst=tree/r; dst.parent.mkdir(parents=True,exist_ok=True); dst.write_bytes(d); inv.append({'path':r,'sha256':h(d),'size':len(d)})
+          vb=(VERSION+'\n').encode(); (tree/'VERSION').write_bytes(vb); inv.append({'path':'VERSION','sha256':h(vb),'size':len(vb)})
+          core={'schema_version':'CS-IEF-10','release_id':'codexstation-omega-portable','release_version':VERSION,'spec_root':'CS-IEF-10','omega_version':'0.2.0','source_repository':'https://github.com/Ivan-Pasev/codexstation-ief','source_revision':'2c433220ecdfbb977a3d4c96b6c326649147c3e9','provider':'NONE','baseline_mode':'OMEGA_KNOWLEDGE_ONLY','signing_status':'UNSIGNED_REFERENCE_RC','platform_qualification':'UNTESTED','execution_modes_qualified':[],'eac_claim':None,'artifacts':sorted(inv,key=lambda x:x['path'])}
+          canonical=json.dumps(core,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode(); manifest={**core,'release_digest':'sha256:'+h(canonical)}
+          mb=(json.dumps(manifest,sort_keys=True,indent=2,ensure_ascii=False)+'\n').encode(); (tree/'MANIFEST.json').write_bytes(mb)
+          lines=[f"{r['sha256']}  {r['path']}" for r in sorted(inv,key=lambda x:x['path'])]; lines.append(f"{h(mb)}  MANIFEST.json"); (tree/'INTEGRITY.sha256').write_bytes(('\n'.join(lines)+'\n').encode())
+          arc=out/f'{NAME}.zip'
+          with zipfile.ZipFile(arc,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for p in sorted(p for p in tree.rglob('*') if p.is_file()):
+                  rel=f'{NAME}/{p.relative_to(tree).as_posix()}'; info=zipfile.ZipInfo(rel,date_time=(1980,1,1,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED; info.create_system=3; info.external_attr=(0o100644<<16); z.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
+          result={'runner_os':'Windows','archive_sha256':'sha256:'+h(arc.read_bytes()),'release_digest':manifest['release_digest'],'source_revision':core['source_revision'],'offline_verify':'PENDING'}
+          with zipfile.ZipFile(arc,'r') as z:
+              prefix=NAME+'/'
+              for line in z.read(prefix+'INTEGRITY.sha256').decode().splitlines():
+                  hh,rel=line.split('  ',1)
+                  if h(z.read(prefix+rel))!=hh: raise SystemExit('OFFLINE_VERIFY_FAIL:'+rel)
+          result['offline_verify']='PASS'; (out/'QUALIFICATION_RESULT.json').write_text(json.dumps(result,sort_keys=True,indent=2)+'\n',encoding='utf-8'); print(json.dumps(result,indent=2))
+          '@ | Set-Content -Encoding utf8 qualify_rc.py
+          python qualify_rc.py
+
+      - name: Upload reproduction result
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1-reproduction-${{ runner.os }}
+          path: qualify-out/
+          if-no-files-found: error
+          retention-days: 90
