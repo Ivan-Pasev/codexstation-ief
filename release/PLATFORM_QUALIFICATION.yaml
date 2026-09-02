@@ -1,0 +1,29 @@
+schema_version: CS-IEF-10
+release_target: codexstation-omega-portable-0.1.0-rc1
+matrix:
+  - platform_class: linux
+    architectures: [x86_64, arm64]
+    knowledge_only: UNTESTED
+    policy_only: UNTESTED
+    execution_modes: []
+    limitations:
+      - no public platform qualification evidence recorded yet
+  - platform_class: windows
+    architectures: [x86_64, arm64]
+    knowledge_only: UNTESTED
+    policy_only: UNTESTED
+    execution_modes: []
+    limitations:
+      - no public platform qualification evidence recorded yet
+  - platform_class: macos
+    architectures: [arm64]
+    knowledge_only: UNTESTED
+    policy_only: UNTESTED
+    execution_modes: []
+    limitations:
+      - no public platform qualification evidence recorded yet
+rules:
+  provider_name_does_not_assign_eac: true
+  knowledge_only_may_qualify_without_execution_provider: true
+  execution_mode_requires_current_provider_qualification: true
+  untested_must_not_be_presented_as_supported: true
