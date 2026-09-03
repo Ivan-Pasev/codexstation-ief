@@ -1,0 +1,22 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://g-i-l-c.com/codexstation/ief/schemas/signer-public-record.schema.json",
+  "title":"CS-IEF-14A SignerPublicRecord",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","signer_id","key_id","algorithm","public_key_encoding","public_key","status","artifact_scopes","identity_statement"],
+  "properties":{
+    "schema_version":{"const":"CS-IEF-14A"},
+    "signer_id":{"type":"string","minLength":1},
+    "key_id":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "algorithm":{"const":"ed25519"},
+    "public_key_encoding":{"const":"base64-raw-32"},
+    "public_key":{"type":"string","minLength":43,"maxLength":44},
+    "status":{"enum":["PENDING","ACTIVE","REVOKED","EXPIRED"]},
+    "valid_from":{"type":["string","null"]},
+    "valid_until":{"type":["string","null"]},
+    "artifact_scopes":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true},
+    "identity_statement":{"type":"string","minLength":1},
+    "identity_refs":{"type":"array","items":{"type":"string"},"default":[]}
+  }
+}
