@@ -28,4 +28,4 @@ jobs:
         with:
           python-version: '3.12.7'
       - name: Run trust constitution reference vectors
-        run: python -m pytest -q tests/test_trust_policy.py
+        run: python -m unittest -q tests.test_trust_policy
