@@ -1,0 +1,31 @@
+name: verify-trust-constitution
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'specs/CS-IEF-14A.md'
+      - 'schemas/signer-public-record.schema.json'
+      - 'schemas/trust-root-policy.schema.json'
+      - 'release/TRUST_ROOT_POLICY.yaml'
+      - 'release/TRUST_METHODS.md'
+      - 'reference/trust_policy.py'
+      - 'tests/test_trust_policy.py'
+      - '.github/workflows/verify-trust-constitution.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+      - name: Run trust constitution reference vectors
+        run: python -m pytest -q tests/test_trust_policy.py
