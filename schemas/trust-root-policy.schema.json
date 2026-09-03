@@ -1,18 +1,27 @@
 {
   "$schema":"https://json-schema.org/draft/2020-12/schema",
   "$id":"https://g-i-l-c.com/codexstation/ief/schemas/trust-root-policy.schema.json",
-  "title":"CS-IEF-10 TrustRootPolicy",
+  "title":"CS-IEF-14A TrustRootPolicy",
   "type":"object",
   "additionalProperties":false,
-  "required":["schema_version","policy_id","version","accepted_signers","artifact_scopes","policy_digest"],
+  "required":["schema_version","policy_id","version","status","artifact_scopes","threshold","accepted_signers","signer_requirements","private_key_policy","signature_policy","revocation_policy","rotation_policy","unsigned_policy","rules","activation_conditions","policy_digest"],
   "properties":{
-    "schema_version":{"const":"CS-IEF-10"},
+    "schema_version":{"const":"CS-IEF-14A"},
     "policy_id":{"type":"string","minLength":1},
     "version":{"type":"string","minLength":1},
-    "accepted_signers":{"type":"array","items":{"type":"object","required":["signer_id","key_id","status"],"properties":{"signer_id":{"type":"string"},"key_id":{"type":"string"},"status":{"enum":["ACTIVE","REVOKED","EXPIRED","UNKNOWN"]},"valid_from":{"type":["string","null"]},"valid_until":{"type":["string","null"]}},"additionalProperties":false}},
-    "artifact_scopes":{"type":"array","items":{"type":"string"},"uniqueItems":true},
-    "threshold":{"type":"integer","minimum":1,"default":1},
-    "revocation_refs":{"type":"array","items":{"type":"string"}},
-    "policy_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+    "status":{"enum":["CONSTITUTION_READY_AWAITING_SIGNER","ACTIVE","SUSPENDED","REVOKED"]},
+    "artifact_scopes":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true},
+    "threshold":{"type":"integer","minimum":1},
+    "accepted_signers":{"type":"array","items":{"type":"object"}},
+    "signer_requirements":{"type":"object"},
+    "private_key_policy":{"type":"object"},
+    "signature_policy":{"type":"object"},
+    "revocation_policy":{"type":"object"},
+    "rotation_policy":{"type":"object"},
+    "unsigned_policy":{"type":"object"},
+    "rules":{"type":"object"},
+    "activation_conditions":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true},
+    "policy_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "notes":{"type":"array","items":{"type":"string"}}
   }
 }
