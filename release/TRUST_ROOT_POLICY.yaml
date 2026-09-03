@@ -1,19 +1,62 @@
-schema_version: CS-IEF-10
+schema_version: CS-IEF-14A
 policy_id: codexstation-ief-public-release-trust
-version: 0.1.0
-status: BOOTSTRAP
-accepted_signers: []
+version: 0.2.0
+status: CONSTITUTION_READY_AWAITING_SIGNER
 artifact_scopes:
   - codexstation-omega-portable
 threshold: 1
-revocation_refs: []
+accepted_signers: []
+signer_requirements:
+  public_key_algorithm:
+    - ed25519
+  public_key_encoding:
+    - base64-raw-32
+  key_id_scheme: sha256-public-key
+  signer_identity_required: true
+  scope_binding_required: true
+private_key_policy:
+  repository_storage: FORBIDDEN
+  release_bundle_storage: FORBIDDEN
+  drive_canonical_storage: FORBIDDEN
+  ci_secret_storage: NOT_AUTHORIZED_BY_THIS_POLICY
+  generation: OPERATOR_CONTROLLED_OFFLINE_OR_HARDWARE_BACKED
+  custody: OUTSIDE_PUBLIC_PROJECT_SURFACES
+signature_policy:
+  format: CS-IEF detached signature envelope v1
+  payload_binding:
+    - artifact_sha256
+    - release_digest
+    - release_id
+    - release_version
+    - source_revision
+  threshold: 1
+  require_active_signer: true
+revocation_policy:
+  mechanism: append-only-revocation-record
+  revocation_refs: []
+  compromise_requires_immediate_revocation: true
+  revoked_key_invalid_for_new_trust_decisions: true
+  historical_verification_preserves_time_context: true
+rotation_policy:
+  new_key_requires_public_signer_record: true
+  old_key_may_overlap_during_transition: true
+  threshold_change_requires_policy_version_bump: true
 unsigned_policy:
   rc_allowed: true
   stable_release_allowed: false
 rules:
   signature_valid_does_not_imply_trusted: true
   trusted_does_not_imply_safe: true
-  signing_keys_in_release: forbidden
+  trusted_does_not_imply_execution_authorized: true
+  signing_keys_in_release: FORBIDDEN
+  private_key_material_in_public_repo: FORBIDDEN
+activation_conditions:
+  - at_least_one_active_accepted_signer
+  - public_signer_record_validates
+  - trust_policy_digest_published
+  - verification_reference_tests_pass
+policy_digest: sha256:8246daa347f3f045b345965ce28890fdd5787d2e3e21c5725bb5b736b5cbf472
 notes:
-  - rc1 is explicitly UNSIGNED until a signer/key lifecycle is established and separately verified
-  - absence of accepted signers means no signed artifact can currently satisfy TRUSTED under this policy
+  - RC2 remains a valid qualified unsigned release candidate under the unsigned-RC policy.
+  - No signed artifact can satisfy TRUSTED while accepted_signers is empty.
+  - Private-key generation and first signature are intentionally outside CS-IEF-14A.
