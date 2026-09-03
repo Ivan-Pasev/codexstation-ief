@@ -1,0 +1,34 @@
+schema_version: CS-IEF-14B
+policy_id: codexstation-ief-github-attestation
+status: READY_FOR_ATTESTATION
+subject:
+  release_id: codexstation-omega-portable
+  release_version: 0.1.0-rc2
+  archive_sha256: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2
+  release_digest: sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13
+  source_revision: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
+attestation_profile:
+  mechanism: github-artifact-attestation
+  identity_binding: github-actions-oidc
+  long_lived_private_key_required: false
+  provenance_required: true
+  subject_digest_required: true
+accepted_identity:
+  repository: Ivan-Pasev/codexstation-ief
+  owner: Ivan-Pasev
+  workflow_ref: .github/workflows/attest-rc2.yml
+verification:
+  require_cryptographic_verification: true
+  require_repository_identity_match: true
+  require_subject_digest_match: true
+  require_release_binding_match: true
+trust_semantics:
+  attestation_valid_does_not_imply_safe: true
+  attestation_valid_does_not_imply_execution_authorized: true
+  attestation_valid_does_not_retroactively_change_platform_qualification: true
+activation:
+  current_state: READY_FOR_ATTESTATION
+  next_state_on_verified_attestation: ATTESTED_IDENTITY_BOUND
+notes:
+  - This policy binds the already-qualified RC2 exact archive digest; it does not rebuild or mutate RC2.
+  - CS-IEF-14A sovereign Ed25519 signer policy remains available as a separate high-assurance path.
