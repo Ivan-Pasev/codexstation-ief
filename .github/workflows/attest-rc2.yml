@@ -2,6 +2,10 @@ name: attest-rc2
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/attest-rc2.yml'
 
 permissions:
   id-token: write
@@ -15,15 +19,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
       - name: Rebuild exact RC2 subject
-        run: python release/build_portable_rc2.py
+        run: python release/build_portable_rc2.py --source-revision 1c625a5ce59197ec991f3f6778a0ad63dc0b7002 --output rc2-out
       - name: Verify exact frozen RC2 archive digest
         shell: bash
         run: |
           set -euo pipefail
           EXPECTED="4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2"
-          ARCHIVE=$(find . -type f -name '*0.1.0-rc2*.zip' -o -name '*rc2*.zip' | head -n 1)
-          test -n "$ARCHIVE"
+          ARCHIVE="rc2-out/codexstation-omega-portable-0.1.0-rc2.zip"
+          test -f "$ARCHIVE"
           ACTUAL=$(sha256sum "$ARCHIVE" | awk '{print $1}')
           test "$ACTUAL" = "$EXPECTED"
           echo "archive=$ARCHIVE" >> "$GITHUB_OUTPUT"
