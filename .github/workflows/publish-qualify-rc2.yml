@@ -1,0 +1,136 @@
+name: publish-qualify-rc2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-qualify-rc2.yml
+
+permissions:
+  actions: read
+  attestations: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RC2_SOURCE: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
+      RC2_SHA256: 4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2
+      RC1_RUN_ID: 33673649834
+      RC1_ARTIFACT: codexstation-omega-portable-0.1.0-rc1
+      TAG: v0.1.0-rc2
+    steps:
+      - name: Checkout current publication metadata
+        uses: actions/checkout@v4
+        with:
+          path: current
+          persist-credentials: false
+
+      - name: Checkout frozen RC2 source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RC2_SOURCE }}
+          path: rc2src
+          persist-credentials: false
+
+      - name: Rebuild exact frozen RC2
+        run: python rc2src/release/build_portable_rc2.py --source-revision "$RC2_SOURCE" --output ../rc2-out
+
+      - name: Verify frozen RC2 archive digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCHIVE="rc2-out/codexstation-omega-portable-0.1.0-rc2.zip"
+          test -f "$ARCHIVE"
+          ACTUAL=$(sha256sum "$ARCHIVE" | awk '{print $1}')
+          test "$ACTUAL" = "$RC2_SHA256"
+          echo "archive=$ARCHIVE" >> "$GITHUB_OUTPUT"
+        id: subject
+
+      - name: Verify GitHub identity-bound attestation
+        run: gh attestation verify "${{ steps.subject.outputs.archive }}" --repo "$GITHUB_REPOSITORY"
+
+      - name: Requalify packaged knowledge-only runtime for publication
+        run: python rc2src/release/qualify_portable_rc2.py "${{ steps.subject.outputs.archive }}" --platform-class linux-x86_64-publication --output publication-qualification
+
+      - name: Download exact historical RC1 workflow artifact
+        run: gh run download "$RC1_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$RC1_ARTIFACT" --dir rc1-artifact
+
+      - name: Qualify RC1-to-RC2 upgrade and rollback preservation
+        run: python current/release/test_rc_lifecycle.py --rc1-artifact rc1-artifact --rc2 "${{ steps.subject.outputs.archive }}" --output RC2_LIFECYCLE_RESULT.json
+
+      - name: Create or verify immutable RC2 tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" > tag.json 2>/dev/null; then
+            TARGET=$(python -c 'import json; print(json.load(open("tag.json"))["object"]["sha"])')
+            test "$TARGET" = "$RC2_SOURCE"
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$TAG" -f sha="$RC2_SOURCE" > tag.json
+          fi
+
+      - name: Create or verify immutable prerelease
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCHIVE="${{ steps.subject.outputs.archive }}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Existing release detected; refusing overwrite and verifying published asset instead."
+          else
+            gh release create "$TAG" "$ARCHIVE" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "CodexStation Omega Portable 0.1.0-rc2" \
+              --notes-file current/release/RC2_RELEASE_NOTES.md \
+              --prerelease
+          fi
+          mkdir -p published
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern 'codexstation-omega-portable-0.1.0-rc2.zip' --dir published
+          ACTUAL=$(sha256sum published/codexstation-omega-portable-0.1.0-rc2.zip | awk '{print $1}')
+          test "$ACTUAL" = "$RC2_SHA256"
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url,isPrerelease,targetCommitish > RELEASE_PUBLICATION.json
+
+      - name: Emit publication adjudication
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          release = json.load(open('RELEASE_PUBLICATION.json'))
+          lifecycle = json.load(open('RC2_LIFECYCLE_RESULT.json'))
+          qualification = json.load(open('publication-qualification/QUALIFICATION_RESULT.json'))
+          result = {
+              'schema_version':'CS-IEF-15-PUBLICATION',
+              'release_id':'codexstation-omega-portable',
+              'release_version':'0.1.0-rc2',
+              'tag':'v0.1.0-rc2',
+              'tag_target':os.environ['RC2_SOURCE'],
+              'archive_sha256':'sha256:' + os.environ['RC2_SHA256'],
+              'github_release_url':release['url'],
+              'prerelease':release['isPrerelease'],
+              'attestation_verification':'PASS',
+              'publication_qualification':qualification['qualification'],
+              'lifecycle':lifecycle,
+              'publication_state':'PUBLISHED_PRERELEASE_QUALIFIED_ATTESTED',
+              'stable_readiness':'STABLE_BLOCKED',
+              'stable_blockers':['SOVEREIGN_TRUST_POLICY_NOT_ACTIVE'],
+              'execution_authorized':False,
+              'eac_claim':None,
+              'claim_boundary':['PUBLICATION_NOT_STABLE','ATTESTED_NOT_SOVEREIGN_TRUSTED','LIFECYCLE_PASS_NOT_EXECUTION_AUTHORIZED']
+          }
+          open('RC2_PUBLICATION_RESULT.json','w').write(json.dumps(result,sort_keys=True,indent=2)+'\n')
+          print(json.dumps(result,sort_keys=True,indent=2))
+          PY
+
+      - name: Upload CS-IEF-15 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: cs-ief-15-publication-evidence
+          path: |
+            RC2_PUBLICATION_RESULT.json
+            RC2_LIFECYCLE_RESULT.json
+            RELEASE_PUBLICATION.json
+            publication-qualification/QUALIFICATION_RESULT.json
+            publication-qualification/INSTALLATION_RECEIPT.json
