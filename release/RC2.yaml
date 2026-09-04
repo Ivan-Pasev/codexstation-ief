@@ -1,22 +1,18 @@
-schema_version: CS-IEF-14B-RC2
+schema_version: CS-IEF-15-RC2
 release_id: codexstation-omega-portable
 release_version: 0.1.0-rc2
-status: QUALIFIED_KNOWLEDGE_ONLY_RC_ATTESTED_IDENTITY_BOUND
-spec_root: CS-IEF-14B
+status: PUBLISHED_PRERELEASE_QUALIFIED_ATTESTED
+spec_root: CS-IEF-15
 omega_version: 0.2.0
 baseline_mode: OMEGA_KNOWLEDGE_ONLY
 execution_provider: NONE
 execution_modes_qualified: []
 eac_claim: null
 source_revision: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
-workflow_run_id: 33686291853
 archive_sha256: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2
 release_digest: sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13
 distribution_bundle_digest: sha256:e20325d2555d04adf1896f911c0ab88f24cd8daca50d28daa746b29644789e6f
 source_graph_digest: sha256:dd8f020f2e1c5ad4e8bfffcb531072d907678b2320df440137e54c2619e4467d
-signing_state: GITHUB_SIGSTORE_IDENTITY_BOUND_ATTESTATION
-trust_state: ATTESTED_IDENTITY_BOUND
-sovereign_signer_trust_state: CONSTITUTION_READY_AWAITING_SIGNER
 reproducibility:
   evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV
   linux_windows_release_digest_identical: true
@@ -28,16 +24,10 @@ platform_qualification:
   overall: QUALIFIED_KNOWLEDGE_ONLY
   records:
     - platform: linux-x86_64
-      schema_validation: PASS
-      integrity: PASS
-      packaged_runtime_import: PASS
       knowledge_only_install: PASS
       installation_receipt_digest: sha256:3e55ee8ada0e0a420f66111cc2fdaa14c7bc965a3f944560651d262770e4ecd2
       qualification: QUALIFIED_KNOWLEDGE_ONLY
     - platform: windows-x86_64
-      schema_validation: PASS
-      integrity: PASS
-      packaged_runtime_import: PASS
       knowledge_only_install: PASS
       installation_receipt_digest: sha256:bc88e7a41b7f6b83b571d1b5ae018102aa852354ea00fec4c7eaa0a8235ec07d
       qualification: QUALIFIED_KNOWLEDGE_ONLY
@@ -52,18 +42,44 @@ attestation:
   predicate_type: https://slsa.dev/provenance/v1
   sigstore_instance: Public Good Sigstore
   rekor_log_index: 2708913109
-  exact_subject_digest_verified: true
   state: ATTESTED_IDENTITY_BOUND
+publication:
+  tag: v0.1.0-rc2
+  tag_target: 1c625a5ce59197ec991f3f6778a0ad63dc0b7002
+  github_release_id: 382647993
+  github_release_url: https://github.com/Ivan-Pasev/codexstation-ief/releases/tag/v0.1.0-rc2
+  prerelease: true
+  github_release_platform_immutable: false
+  release_asset_id: 544183662
+  release_asset_digest: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2
+  publication_workflow_run_id: 33864229370
+  publication_state: PUBLISHED_PRERELEASE_QUALIFIED_ATTESTED
+lifecycle:
+  upgrade_rc1_to_rc2: PASS
+  rollback_rc2_to_rc1_pointer_preservation: PASS
+  rc1_tree_preserved: true
+  rc2_tree_preserved: true
+  evidence_preserved: true
+  model: SIDE_BY_SIDE_RELEASES_POINTER_ONLY_SWITCH
+  rc1_qualification_claim: false
+signing_state: GITHUB_SIGSTORE_IDENTITY_BOUND_ATTESTATION
+trust_state: ATTESTED_IDENTITY_BOUND
+sovereign_signer_trust_state: CONSTITUTION_READY_AWAITING_SIGNER
+stable_readiness:
+  state: STABLE_BLOCKED
+  blockers:
+    - SOVEREIGN_TRUST_POLICY_NOT_ACTIVE
+  observations:
+    - GITHUB_RELEASE_OBJECT_IMMUTABLE_FALSE
 promotion:
-  decision: PROMOTE_TO_QUALIFIED_ATTESTED_RC
-  public_release_eligible: true
+  decision: PUBLISHED_AS_QUALIFIED_ATTESTED_PRERELEASE
   stable_release_eligible: false
   execution_authorized: false
 claim_boundary:
-  built_does_not_imply_installable: true
-  schema_valid_does_not_imply_platform_qualified: true
+  published_does_not_imply_stable: true
   platform_qualified_knowledge_only_does_not_imply_execution_qualified: true
   attested_does_not_imply_safe: true
   attested_does_not_imply_sovereign_signer_trust: true
-  attested_does_not_imply_execution_authorized: true
+  lifecycle_pass_does_not_imply_execution_authorized: true
+  rollback_preservation_does_not_qualify_rc1: true
   release_does_not_authorize_execution: true
