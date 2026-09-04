@@ -4,7 +4,6 @@ import argparse
 import hashlib
 import json
 import pathlib
-import shutil
 import tempfile
 import zipfile
 
@@ -44,10 +43,20 @@ def find_inner_rc1(root: pathlib.Path) -> pathlib.Path:
     return candidates[0]
 
 
+def resolve_rc1_artifact(source: pathlib.Path, temp: pathlib.Path) -> pathlib.Path:
+    if source.is_dir():
+        return find_inner_rc1(source)
+    artifact_unpack = temp / "artifact"
+    artifact_unpack.mkdir()
+    with zipfile.ZipFile(source) as zf:
+        zf.extractall(artifact_unpack)
+    return find_inner_rc1(artifact_unpack)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--rc1-artifact", required=True, type=pathlib.Path,
-                    help="GitHub Actions artifact ZIP containing historical RC1 ZIP")
+                    help="GitHub Actions artifact ZIP or extracted artifact directory containing historical RC1 ZIP")
     ap.add_argument("--rc2", required=True, type=pathlib.Path)
     ap.add_argument("--output", required=True, type=pathlib.Path)
     args = ap.parse_args()
@@ -57,11 +66,7 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory() as td:
         temp = pathlib.Path(td)
-        artifact_unpack = temp / "artifact"
-        artifact_unpack.mkdir()
-        with zipfile.ZipFile(args.rc1_artifact) as zf:
-            zf.extractall(artifact_unpack)
-        rc1 = find_inner_rc1(artifact_unpack)
+        rc1 = resolve_rc1_artifact(args.rc1_artifact, temp)
         if sha256_file(rc1) != RC1_SHA256:
             raise SystemExit("RC1_DIGEST_MISMATCH")
 
@@ -73,7 +78,6 @@ def main() -> None:
         state.mkdir(parents=True)
         evidence.mkdir(parents=True)
 
-        # Preserve independent operator/evidence state outside release trees.
         (evidence / "history.json").write_text(json.dumps({"rc1":"held","rc2":"qualified"}, sort_keys=True) + "\n")
         evidence_before = tree_digest(evidence)
 
@@ -81,7 +85,6 @@ def main() -> None:
         rc1_before = tree_digest(rc1_root)
         (state / "current.json").write_text(json.dumps({"active":"0.1.0-rc1"}) + "\n")
 
-        # Upgrade: install RC2 alongside historical RC1 and then switch pointer.
         rc2_root = extract_archive(args.rc2, releases / "0.1.0-rc2")
         rc2_before = tree_digest(rc2_root)
         (state / "current.json").write_text(json.dumps({"active":"0.1.0-rc2"}) + "\n")
@@ -90,7 +93,6 @@ def main() -> None:
         if tree_digest(evidence) != evidence_before:
             raise SystemExit("EVIDENCE_MUTATED_BY_UPGRADE")
 
-        # Rollback: pointer-only transition, preserving both immutable release trees.
         (state / "current.json").write_text(json.dumps({"active":"0.1.0-rc1"}) + "\n")
         if tree_digest(rc1_root) != rc1_before:
             raise SystemExit("RC1_MUTATED_BY_ROLLBACK")
