@@ -1,0 +1,44 @@
+{
+  "archive_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+  "attestation_verification": "PASS",
+  "claim_boundary": [
+    "PUBLICATION_NOT_STABLE",
+    "ATTESTED_NOT_SOVEREIGN_TRUSTED",
+    "LIFECYCLE_PASS_NOT_EXECUTION_AUTHORIZED"
+  ],
+  "eac_claim": null,
+  "execution_authorized": false,
+  "github_release_url": "https://github.com/Ivan-Pasev/codexstation-ief/releases/tag/v0.1.0-rc2",
+  "lifecycle": {
+    "claim_boundary": [
+      "ROLLBACK_PRESERVATION_NOT_RC1_QUALIFICATION",
+      "LIFECYCLE_PASS_NOT_STABLE",
+      "PUBLICATION_NOT_EXECUTION_AUTHORIZATION"
+    ],
+    "evidence_preserved": true,
+    "pointer_model": "SIDE_BY_SIDE_RELEASES_POINTER_ONLY_SWITCH",
+    "rc1_archive_sha256": "sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5",
+    "rc1_qualification_claim": false,
+    "rc1_tree_preserved": true,
+    "rc2_archive_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+    "rc2_tree_preserved": true,
+    "rollback": "PASS",
+    "schema_version": "CS-IEF-15-LIFECYCLE",
+    "upgrade": "PASS"
+  },
+  "prerelease": true,
+  "publication_qualification": "QUALIFIED_KNOWLEDGE_ONLY",
+  "publication_state": "PUBLISHED_PRERELEASE_QUALIFIED_ATTESTED",
+  "release_id": "codexstation-omega-portable",
+  "release_version": "0.1.0-rc2",
+  "schema_version": "CS-IEF-15-PUBLICATION",
+  "stable_blockers": [
+    "SOVEREIGN_TRUST_POLICY_NOT_ACTIVE"
+  ],
+  "stable_readiness": "STABLE_BLOCKED",
+  "tag": "v0.1.0-rc2",
+  "tag_target": "1c625a5ce59197ec991f3f6778a0ad63dc0b7002",
+  "workflow_run_id": 33864229370,
+  "evidence_artifact_id": 9933306966,
+  "evidence_artifact_digest": "sha256:68477cb255898e6b0f421f2ef4539b94a83865c7fc440a69a56302aaac3758fa"
+}
