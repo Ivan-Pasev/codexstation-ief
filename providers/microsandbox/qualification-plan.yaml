@@ -1,0 +1,51 @@
+schema_version: CS-IEF-16-MSB-QUALIFICATION-PLAN-1
+provider: microsandbox
+upstream_repository: superradcompany/microsandbox
+prior_reproducibility_anchor: e36792dae06edcd9b6f86abd6b83da7a26c7cdf6
+observed_upstream_main: 5eca4de8bf233e57f114140f8c076ea8c96f21ab
+observed_at: '2026-09-04'
+qualification_state: QUALIFICATION_BLOCKED_ENVIRONMENT
+assigned_eac: null
+execution_authorized: false
+required_environment:
+  exact_provider_identity: REQUIRED
+  exact_runtime_identity: REQUIRED
+  host_os_kernel_arch: REQUIRED
+  virtualization_backend_identity: REQUIRED
+  hardware_virtualization_available: REQUIRED
+result_vocabulary:
+  - PASS
+  - FAIL
+  - NOT_APPLICABLE
+  - UNRESOLVED
+mandatory_gates:
+  - provider_discovery_health
+  - virtualization_backend_identity
+  - guest_host_boundary
+  - cpu_memory_enforcement
+  - network_none_semantics
+  - network_policy_enforcement
+  - destination_bound_secret_non_exposure
+  - immutable_input_ephemeral_workspace
+  - shared_mutable_coupling_detection
+  - bind_mount_authority
+  - collected_streaming_receipts
+  - lifecycle_stale_handle_incarnation_safety
+  - checkpoint_semantics
+  - destruction_persistence
+  - metrics_logs_evidence
+  - explicit_fail_closed_degradation
+  - provider_runtime_source_identity_receipt
+  - exact_version_risk_ledger
+adjudication:
+  any_mandatory_fail: EAC_NULL
+  missing_environment_identity: EAC_NULL
+  unresolved_isolation_critical_gate: EAC_NULL
+  documentation_only: EAC_NULL
+  feature_mapping_only: EAC_NULL
+claim_boundary:
+  feature_present_does_not_imply_control_enforced: true
+  microvm_architecture_does_not_imply_eac3: true
+  upstream_security_claim_does_not_imply_local_qualification: true
+  qualification_does_not_imply_execution_authorization: true
+  no_simulated_execution: true
