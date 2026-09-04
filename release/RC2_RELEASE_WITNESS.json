@@ -1,0 +1,51 @@
+{
+  "schema_version": "CS-IEF-14B-RELEASE-WITNESS",
+  "release_id": "codexstation-omega-portable",
+  "release_version": "0.1.0-rc2",
+  "subject": {
+    "archive_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+    "release_digest": "sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13",
+    "distribution_bundle_digest": "sha256:e20325d2555d04adf1896f911c0ab88f24cd8daca50d28daa746b29644789e6f",
+    "source_graph_digest": "sha256:dd8f020f2e1c5ad4e8bfffcb531072d907678b2320df440137e54c2619e4467d",
+    "source_revision": "1c625a5ce59197ec991f3f6778a0ad63dc0b7002"
+  },
+  "build_evidence": {
+    "workflow_run_id": 33686291853,
+    "reproducibility": "BR3_REPRODUCIBLE_INDEPENDENT_ENV",
+    "archive_byte_identical_linux_windows": true
+  },
+  "qualification_evidence": {
+    "overall": "QUALIFIED_KNOWLEDGE_ONLY",
+    "linux_x86_64": "PASS",
+    "windows_x86_64": "PASS",
+    "provider": "NONE",
+    "execution_modes_qualified": []
+  },
+  "attestation_evidence": {
+    "github_attestation_id": 45196448,
+    "workflow_run_id": 33852664106,
+    "repository": "Ivan-Pasev/codexstation-ief",
+    "workflow_path": ".github/workflows/attest-rc2.yml",
+    "workflow_ref": "refs/heads/main",
+    "workflow_commit": "601a1835ba1d0da6b7679e73f83c4800cb8dbeb4",
+    "predicate_type": "https://slsa.dev/provenance/v1",
+    "sigstore": "Public Good Sigstore",
+    "rekor_log_index": 2708913109,
+    "subject_digest_match": "PASS"
+  },
+  "trust_adjudication": {
+    "identity_bound_provenance": "VERIFIED",
+    "state": "ATTESTED_IDENTITY_BOUND",
+    "sovereign_signer_policy_state": "CONSTITUTION_READY_AWAITING_SIGNER",
+    "sovereign_trusted": false,
+    "execution_authorized": false,
+    "eac_claim": null
+  },
+  "claim_boundary": [
+    "WITNESSED_NOT_TRUE",
+    "ATTESTED_NOT_SAFE",
+    "ATTESTED_NOT_EXECUTION_AUTHORIZED",
+    "PROVENANCE_NOT_SOVEREIGN_SIGNER_TRUST",
+    "KNOWLEDGE_ONLY_QUALIFICATION_NOT_EXECUTION_QUALIFICATION"
+  ]
+}
