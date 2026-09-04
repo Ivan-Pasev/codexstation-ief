@@ -1,0 +1,18 @@
+{
+  "claim_boundary": [
+    "ROLLBACK_PRESERVATION_NOT_RC1_QUALIFICATION",
+    "LIFECYCLE_PASS_NOT_STABLE",
+    "PUBLICATION_NOT_EXECUTION_AUTHORIZATION"
+  ],
+  "evidence_preserved": true,
+  "pointer_model": "SIDE_BY_SIDE_RELEASES_POINTER_ONLY_SWITCH",
+  "rc1_archive_sha256": "sha256:b176ce37fd040f6d4dbc309af0a26cd396c529c75983d0ead1622554846028a5",
+  "rc1_qualification_claim": false,
+  "rc1_tree_preserved": true,
+  "rc2_archive_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+  "rc2_tree_preserved": true,
+  "rollback": "PASS",
+  "schema_version": "CS-IEF-15-LIFECYCLE",
+  "upgrade": "PASS",
+  "workflow_run_id": 33864229370
+}
