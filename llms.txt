@@ -19,10 +19,13 @@ Primary documents:
 - specs/CS-IEF-10.md — release engineering, reproducible build attestation, signing/trust separation and platform qualification
 - specs/CS-IEF-12.md — independent reproduction, platform qualification and RC1 adjudication
 - specs/CS-IEF-13.md — corrective RC2 schema-conformant packaging and qualification contract
+- specs/CS-IEF-14A.md — public trust constitution and sovereign signer policy
+- specs/CS-IEF-14B.md — RC2 GitHub/Sigstore identity-bound attestation and release witness
 - schemas/release-manifest.schema.json — deterministic portable release manifest
 - schemas/installation-receipt.schema.json — local bootstrap/install evidence contract
 - schemas/build-attestation.schema.json — reproducible build provenance/attestation contract
 - schemas/platform-qualification.schema.json — exact-release platform qualification contract
+- schemas/signer-public-record.schema.json — sovereign public signer record
 - schemas/trust-root-policy.schema.json — signer identity/key-scope/revocation trust policy contract
 - schemas/policy-decision.schema.json — machine-readable authorization/rejection evidence
 - schemas/cell-profile.schema.json — machine-readable research/proof profile contract
@@ -40,7 +43,14 @@ Primary documents:
 - release/RC1.yaml — historical RC1 adjudication; held for install-contract defects
 - release/RC1_QUALIFICATION_RESULT.json — RC1 reproduction/qualification evidence
 - release/RC2_DECLARATION.json — immutable corrective candidate declaration consumed by the builder
-- release/RC2.yaml — evolving RC2 adjudication state outside the release payload
+- release/RC2.yaml — current RC2 adjudication state
+- release/RC2_BUILD_RESULT.json — RC2 deterministic build and BR3 reproduction evidence
+- release/RC2_QUALIFICATION_RESULT.json — Linux/Windows exact-release knowledge-only qualification evidence
+- release/RC2_ATTESTATION_RESULT.json — GitHub/Sigstore identity-bound provenance evidence
+- release/RC2_RELEASE_WITNESS.json — bounded combined release witness
+- release/ATTESTATION_POLICY.yaml — accepted GitHub attestation identity/subject policy
+- release/TRUST_ROOT_POLICY.yaml — sovereign Ed25519 trust constitution, currently awaiting signer
+- release/TRUST_METHODS.md — keyless GitHub/Sigstore and sovereign signing method separation
 - release/build_portable_rc2.py — canonical RC2 builder
 - release/qualify_portable_rc2.py — archive-only packaged-runtime qualifier
 - reference/portable_runtime.py — canonical release-manifest construction, verification and knowledge-only bootstrap
@@ -50,6 +60,7 @@ Primary documents:
 - reference/profile_compiler.py — purpose-profile constructor skeleton
 - reference/witness_graph.py — deterministic append-only witness graph reference
 - reference/omega_compiler.py — deterministic multi-surface projection skeleton
+- reference/trust_policy.py — public trust-policy evaluator
 - providers/microsandbox/README.md — reference adapter boundary and status
 - sources/microsandbox.yaml — pinned reference-provider source manifest
 
@@ -58,22 +69,26 @@ Current verified Microsandbox source snapshot:
 
 Portable release state:
 - RC1: HOLD_INSTALL_CONTRACT_DEFECT; preserved unchanged as historical evidence.
-- RC1 achieved BR3 independent-environment semantic reproduction across Linux/Windows but failed exact packaged knowledge-only installation because its generated ReleaseManifest drifted from the canonical schema/runtime contract.
-- RC2 target: schema-conformant canonical ReleaseManifest, explicit distribution/source/compiler binding, packaged-runtime installer execution, host-independent archive ordering, Linux/Windows reproduction and exact-platform knowledge-only qualification.
-- RC2 remains provider NONE, EAC null, unsigned and untrusted until evidence changes those facts.
+- RC2: QUALIFIED_KNOWLEDGE_ONLY_RC_ATTESTED_IDENTITY_BOUND.
+- RC2 archive: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2.
+- RC2 reproducibility: BR3_REPRODUCIBLE_INDEPENDENT_ENV with byte-identical Linux/Windows normalized archives.
+- RC2 platform qualification: QUALIFIED_KNOWLEDGE_ONLY on linux-x86_64 and windows-x86_64.
+- RC2 GitHub artifact attestation: 45196448, workflow run 33852664106, Public Good Sigstore, Rekor log index 2708913109.
+- RC2 remains provider NONE, EAC null and execution unauthorized.
+- Sovereign Ed25519 trust root remains CONSTITUTION_READY_AWAITING_SIGNER with accepted_signers empty; GitHub/Sigstore attestation does not silently satisfy it.
 
 Key rules:
 - There is one canonical Ω and multiple generated surface projections; generated artifacts are not new canon.
 - BUILT != REPRODUCED != INSTALLABLE != ATTESTED != SIGNED != TRUSTED != QUALIFIED != AUTHORIZED.
-- A valid signature is cryptographic evidence, not automatic trust, platform qualification, safety or execution authorization.
+- Identity-bound provenance is distinct from sovereign signer trust.
+- A valid signature or attestation is cryptographic provenance evidence, not automatic safety, execution authorization, provider qualification or EAC.
 - Signing never repairs a defective artifact.
-- Same semantic release digest does not imply byte-identical archive.
+- Same semantic release digest does not imply byte-identical archive unless separately evidenced.
 - Archive integrity does not imply schema/runtime contract conformance.
 - Cross-platform reproduction does not imply platform installation qualification.
 - Platform support is exact-release evidence; UNTESTED must never be presented as supported.
 - The portable baseline is provider-free OMEGA_KNOWLEDGE_ONLY and carries no EAC claim.
-- RC2 package construction must use the canonical public builder and must validate the emitted ReleaseManifest before packaging.
-- RC2 qualification must execute the portable runtime shipped inside the exact archive.
+- Release qualification must execute the portable runtime shipped inside the exact archive.
 - Surface adapters may narrow representation/capabilities but may never rewrite constitutional, authority, assurance, witness, security, or claim-boundary semantics.
 - Unavailable capabilities are disclosed/omitted; they are never simulated by prose.
 - Installation is not authorization; provider discovery is not qualification; qualification is not execution authorization.
@@ -90,6 +105,7 @@ Key rules:
 - Policy compilation precedes provider materialization.
 - Cell profiles constrain/construct ExecutionSpec; profiles never call providers directly.
 - Witness records bind observation, intent, authorization, plan, outcome, evidence, rejection, replication and adjudication without proving semantic truth.
+- WITNESSED != TRUE and ATTESTED != SAFE.
 - Effective authority may narrow automatically but may never silently widen.
 - Reproducibility claims cannot exceed captured evidence.
 - FORMALLY_CHECKED is bounded to the pinned external prover target/toolchain/dependencies and does not imply empirical truth, novelty, or peer-review status.
