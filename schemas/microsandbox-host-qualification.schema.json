@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://g-i-l-c.com/codexstation/ief/schemas/microsandbox-host-qualification.schema.json",
+  "title":"CS-IEF-16B Microsandbox Host Qualification Evidence",
+  "type":"object",
+  "required":["schema","host","microsandbox","gates","adjudication","assigned_eac","execution_authorized","evidence_digest"],
+  "properties":{
+    "schema":{"const":"CS-IEF-16A/host-qualification-evidence-v1"},
+    "host":{"type":"object"},
+    "virtualization":{"type":"object"},
+    "microsandbox":{"type":"object"},
+    "gates":{"type":"object","minProperties":18},
+    "adjudication":{"type":"object"},
+    "assigned_eac":{"type":["integer","null"]},
+    "execution_authorized":{"type":"boolean"},
+    "evidence_digest":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+  },
+  "additionalProperties":true
+}
