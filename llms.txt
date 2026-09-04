@@ -21,6 +21,7 @@ Primary documents:
 - specs/CS-IEF-13.md — corrective RC2 schema-conformant packaging and qualification contract
 - specs/CS-IEF-14A.md — public trust constitution and sovereign signer policy
 - specs/CS-IEF-14B.md — RC2 GitHub/Sigstore identity-bound attestation and release witness
+- specs/CS-IEF-15.md — digest/tag-bound prerelease publication and RC1/RC2 lifecycle preservation qualification
 - schemas/release-manifest.schema.json — deterministic portable release manifest
 - schemas/installation-receipt.schema.json — local bootstrap/install evidence contract
 - schemas/build-attestation.schema.json — reproducible build provenance/attestation contract
@@ -43,16 +44,20 @@ Primary documents:
 - release/RC1.yaml — historical RC1 adjudication; held for install-contract defects
 - release/RC1_QUALIFICATION_RESULT.json — RC1 reproduction/qualification evidence
 - release/RC2_DECLARATION.json — immutable corrective candidate declaration consumed by the builder
-- release/RC2.yaml — current RC2 adjudication state
+- release/RC2.yaml — current RC2 publication/trust/qualification adjudication state
 - release/RC2_BUILD_RESULT.json — RC2 deterministic build and BR3 reproduction evidence
 - release/RC2_QUALIFICATION_RESULT.json — Linux/Windows exact-release knowledge-only qualification evidence
 - release/RC2_ATTESTATION_RESULT.json — GitHub/Sigstore identity-bound provenance evidence
 - release/RC2_RELEASE_WITNESS.json — bounded combined release witness
+- release/RC2_PUBLICATION_RESULT.json — CS-IEF-15 public prerelease and stable-readiness adjudication
+- release/RC2_LIFECYCLE_RESULT.json — real RC1-to-RC2 upgrade/rollback preservation evidence
+- release/RC2_RELEASE_NOTES.md — public prerelease notes and claim boundary
 - release/ATTESTATION_POLICY.yaml — accepted GitHub attestation identity/subject policy
 - release/TRUST_ROOT_POLICY.yaml — sovereign Ed25519 trust constitution, currently awaiting signer
 - release/TRUST_METHODS.md — keyless GitHub/Sigstore and sovereign signing method separation
 - release/build_portable_rc2.py — canonical RC2 builder
 - release/qualify_portable_rc2.py — archive-only packaged-runtime qualifier
+- release/test_rc_lifecycle.py — side-by-side RC1/RC2 upgrade/rollback preservation qualifier
 - reference/portable_runtime.py — canonical release-manifest construction, verification and knowledge-only bootstrap
 - reference/runtime_bootstrap.py — provider-observation/qualification-aware bootstrap reference slice
 - reference/release_engineering.py — build attestation and platform-claim reference helpers
@@ -69,19 +74,28 @@ Current verified Microsandbox source snapshot:
 
 Portable release state:
 - RC1: HOLD_INSTALL_CONTRACT_DEFECT; preserved unchanged as historical evidence.
-- RC2: QUALIFIED_KNOWLEDGE_ONLY_RC_ATTESTED_IDENTITY_BOUND.
+- RC2: PUBLISHED_PRERELEASE_QUALIFIED_ATTESTED.
+- Public prerelease: https://github.com/Ivan-Pasev/codexstation-ief/releases/tag/v0.1.0-rc2
+- RC2 tag `v0.1.0-rc2` resolves to frozen source `1c625a5ce59197ec991f3f6778a0ad63dc0b7002`.
 - RC2 archive: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2.
+- Published GitHub asset digest matches the frozen RC2 archive digest.
 - RC2 reproducibility: BR3_REPRODUCIBLE_INDEPENDENT_ENV with byte-identical Linux/Windows normalized archives.
 - RC2 platform qualification: QUALIFIED_KNOWLEDGE_ONLY on linux-x86_64 and windows-x86_64.
 - RC2 GitHub artifact attestation: 45196448, workflow run 33852664106, Public Good Sigstore, Rekor log index 2708913109.
+- CS-IEF-15 publication/lifecycle workflow run 33864229370: PASS.
+- RC1->RC2 upgrade preservation and RC2->RC1 pointer rollback preservation: PASS; this does not qualify RC1.
+- GitHub release object reports immutable=false; CS-IEF claims digest/tag-bound policy immutability, not platform-enforced immutable-release mode.
+- Stable readiness: STABLE_BLOCKED because the sovereign signer trust policy remains inactive.
 - RC2 remains provider NONE, EAC null and execution unauthorized.
 - Sovereign Ed25519 trust root remains CONSTITUTION_READY_AWAITING_SIGNER with accepted_signers empty; GitHub/Sigstore attestation does not silently satisfy it.
 
 Key rules:
 - There is one canonical Ω and multiple generated surface projections; generated artifacts are not new canon.
-- BUILT != REPRODUCED != INSTALLABLE != ATTESTED != SIGNED != TRUSTED != QUALIFIED != AUTHORIZED.
+- BUILT != REPRODUCED != INSTALLABLE != ATTESTED != SIGNED != TRUSTED != QUALIFIED != PUBLISHED != STABLE != AUTHORIZED.
 - Identity-bound provenance is distinct from sovereign signer trust.
 - A valid signature or attestation is cryptographic provenance evidence, not automatic safety, execution authorization, provider qualification or EAC.
+- Publication is not stable-release qualification.
+- Tag/digest-bound publication is distinct from platform-enforced immutable release state.
 - Signing never repairs a defective artifact.
 - Same semantic release digest does not imply byte-identical archive unless separately evidenced.
 - Archive integrity does not imply schema/runtime contract conformance.
