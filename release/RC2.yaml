@@ -1,8 +1,8 @@
-schema_version: CS-IEF-13-RC2
+schema_version: CS-IEF-14B-RC2
 release_id: codexstation-omega-portable
 release_version: 0.1.0-rc2
-status: QUALIFIED_KNOWLEDGE_ONLY_RC
-spec_root: CS-IEF-13
+status: QUALIFIED_KNOWLEDGE_ONLY_RC_ATTESTED_IDENTITY_BOUND
+spec_root: CS-IEF-14B
 omega_version: 0.2.0
 baseline_mode: OMEGA_KNOWLEDGE_ONLY
 execution_provider: NONE
@@ -14,8 +14,9 @@ archive_sha256: sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179b
 release_digest: sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13
 distribution_bundle_digest: sha256:e20325d2555d04adf1896f911c0ab88f24cd8daca50d28daa746b29644789e6f
 source_graph_digest: sha256:dd8f020f2e1c5ad4e8bfffcb531072d907678b2320df440137e54c2619e4467d
-signing_state: UNSIGNED
-trust_state: UNASSESSED
+signing_state: GITHUB_SIGSTORE_IDENTITY_BOUND_ATTESTATION
+trust_state: ATTESTED_IDENTITY_BOUND
+sovereign_signer_trust_state: CONSTITUTION_READY_AWAITING_SIGNER
 reproducibility:
   evidenced_level: BR3_REPRODUCIBLE_INDEPENDENT_ENV
   linux_windows_release_digest_identical: true
@@ -40,14 +41,29 @@ platform_qualification:
       knowledge_only_install: PASS
       installation_receipt_digest: sha256:bc88e7a41b7f6b83b571d1b5ae018102aa852354ea00fec4c7eaa0a8235ec07d
       qualification: QUALIFIED_KNOWLEDGE_ONLY
+attestation:
+  github_attestation_id: 45196448
+  workflow_run_id: 33852664106
+  workflow_path: .github/workflows/attest-rc2.yml
+  workflow_ref: refs/heads/main
+  workflow_commit: 601a1835ba1d0da6b7679e73f83c4800cb8dbeb4
+  mechanism: github-artifact-attestation
+  identity_binding: github-actions-oidc
+  predicate_type: https://slsa.dev/provenance/v1
+  sigstore_instance: Public Good Sigstore
+  rekor_log_index: 2708913109
+  exact_subject_digest_verified: true
+  state: ATTESTED_IDENTITY_BOUND
 promotion:
-  decision: PROMOTE_TO_QUALIFIED_UNSIGNED_RC
-  signing_eligible: true
+  decision: PROMOTE_TO_QUALIFIED_ATTESTED_RC
   public_release_eligible: true
+  stable_release_eligible: false
   execution_authorized: false
 claim_boundary:
   built_does_not_imply_installable: true
   schema_valid_does_not_imply_platform_qualified: true
   platform_qualified_knowledge_only_does_not_imply_execution_qualified: true
-  signed_does_not_imply_trusted: true
+  attested_does_not_imply_safe: true
+  attested_does_not_imply_sovereign_signer_trust: true
+  attested_does_not_imply_execution_authorized: true
   release_does_not_authorize_execution: true
