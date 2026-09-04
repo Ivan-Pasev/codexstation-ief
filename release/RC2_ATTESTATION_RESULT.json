@@ -1,0 +1,44 @@
+{
+  "schema_version": "CS-IEF-14B",
+  "release_id": "codexstation-omega-portable",
+  "release_version": "0.1.0-rc2",
+  "subject": {
+    "archive_sha256": "sha256:4110edafaa4b8bc860f359e9532634415164df86a6c26fd439608179bae08cf2",
+    "release_digest": "sha256:3f05883dc5980ca921eadbf2536c5538027e08eb677ce8fc1d3475b0349edb13",
+    "source_revision": "1c625a5ce59197ec991f3f6778a0ad63dc0b7002"
+  },
+  "attestation": {
+    "mechanism": "github-artifact-attestation",
+    "identity_binding": "github-actions-oidc",
+    "github_attestation_id": 45196448,
+    "workflow_run_id": 33852664106,
+    "workflow_path": ".github/workflows/attest-rc2.yml",
+    "workflow_ref": "refs/heads/main",
+    "workflow_commit": "601a1835ba1d0da6b7679e73f83c4800cb8dbeb4",
+    "repository": "Ivan-Pasev/codexstation-ief",
+    "runner_environment": "github-hosted",
+    "event": "push",
+    "predicate_type": "https://slsa.dev/provenance/v1",
+    "sigstore_instance": "Public Good Sigstore",
+    "rekor_log_index": 2708913109,
+    "subject_digest_verified_before_attestation": true,
+    "attestation_step": "PASS"
+  },
+  "adjudication": {
+    "provenance_state": "ATTESTED_IDENTITY_BOUND",
+    "cryptographic_provenance": "PASS",
+    "repository_identity_match": "PASS",
+    "workflow_identity_match": "PASS",
+    "subject_digest_match": "PASS",
+    "sovereign_ed25519_trust_root": "NOT_ACTIVE",
+    "trusted_under_sovereign_signer_policy": false,
+    "execution_authorized": false,
+    "eac_claim": null
+  },
+  "claim_boundary": {
+    "attested_does_not_imply_safe": true,
+    "attested_does_not_imply_execution_authorized": true,
+    "attested_does_not_imply_sovereign_signer_trust": true,
+    "attested_does_not_replace_platform_qualification": true
+  }
+}
