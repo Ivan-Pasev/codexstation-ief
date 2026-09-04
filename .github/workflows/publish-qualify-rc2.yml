@@ -37,7 +37,7 @@ jobs:
           persist-credentials: false
 
       - name: Rebuild exact frozen RC2
-        run: python rc2src/release/build_portable_rc2.py --source-revision "$RC2_SOURCE" --output ../rc2-out
+        run: python rc2src/release/build_portable_rc2.py --source-revision "$RC2_SOURCE" --output rc2-out
 
       - name: Verify frozen RC2 archive digest
         shell: bash
